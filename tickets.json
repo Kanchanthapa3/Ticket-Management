@@ -6,5 +6,13 @@
         "category": "software",
         "priority": "low",
         "status": "Open"
+    },
+    {
+        "id": 1,
+        "title": "",
+        "description": "",
+        "category": "",
+        "priority": "",
+        "status": "Open"
     }
 ]
