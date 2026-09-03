@@ -1,195 +1,163 @@
-import json
 
-tickets = []
-ticket_id = 1
+from auth import login
 
-
-def save_tickets():
-    with open("tickets.json", "w") as file:
-        json.dump(tickets, file, indent=4)
-
-def load_tickets():
-    global tickets
-
-    with open("tickets.json", "r") as file:
-        tickets = json.load(file)
+from tickets import (
+    load_tickets,
+    create_ticket,
+    view_tickets,
+    search_ticket,
+    update_ticket,
+    delete_ticket,
+    assign_ticket
+)
 
 
 # ==============================
-# CREATE TICKET
+# COLORS
 # ==============================
 
-def create_ticket():
-    global ticket_id
-
-    title = input("Enter ticket title: ")
-    description = input("Enter ticket description: ")
-    category = input("Enter category: ")
-    priority = input("Mention priority based on your emergency: ")
-
-    ticket = {
-        "id": ticket_id,
-        "title": title,
-        "description": description,
-        "category": category,
-        "priority": priority,
-        "status": "Open"
-    }
-
-    tickets.append(ticket)
-
-    ticket_id += 1
-    save_tickets()
-
-    print("\nTicket created successfully!")
-    print("Your Ticket ID is:", ticket["id"])
+RED = "\033[91m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+BLUE = "\033[94m"
+CYAN = "\033[96m"
+RESET = "\033[0m"
 
 
 # ==============================
-# VIEW ALL TICKETS
+# ROLE MENU
 # ==============================
 
-def view_tickets():
-    print("\n====== ALL TICKETS ======")
+def show_role_menu(current_user):
 
-    if len(tickets) == 0:
-        print("No tickets found.")
-        return
+    role = current_user["role"]
 
-    for ticket in tickets:
-        print("\nTicket ID:", ticket["id"])
-        print("Title:", ticket["title"])
-        print("Description:", ticket["description"])
-        print("Category:", ticket["category"])
-        print("Priority:", ticket["priority"])
-        print("Status:", ticket["status"])
-        print("--------------------------------")
+    # ==========================
+    # USER MENU
+    # ==========================
 
+    if role == "user":
 
-# ==============================
-# SEARCH TICKET
-# ==============================
+        while True:
 
-def search_ticket():
-    search_id = int(input("Enter ticket ID to search: "))
+            print("\n====== USER MENU ======")
+            print("1. Create Ticket")
+            print("2. View My Tickets")
+            print("3. Search My Ticket")
+            print("4. Logout")
 
-    for ticket in tickets:
-        if ticket["id"] == search_id:
-            print("\n====== TICKET FOUND ======")
-            print("Ticket ID:", ticket["id"])
-            print("Title:", ticket["title"])
-            print("Description:", ticket["description"])
-            print("Category:", ticket["category"])
-            print("Priority:", ticket["priority"])
-            print("Status:", ticket["status"])
-            return
-
-    print("\nTicket not found.")
-
-def update_ticket():
-    update_id = int(input("Enter ticket ID to update: "))
-
-    for ticket in tickets:
-        if ticket["id"] == update_id:
-
-            print("\n====== UPDATE TICKET ======")
-            print("1. Title")
-            print("2. Description")
-            print("3. Category")
-            print("4. Priority")
-            print("5. Status")
-
-            choice = input("What do you want to update? ")
+            choice = input("Enter your choice: ")
 
             if choice == "1":
-                ticket["title"] = input("Enter new title: ")
+                create_ticket(current_user)
 
             elif choice == "2":
-                ticket["description"] = input("Enter new description: ")
+                view_tickets(current_user)
 
             elif choice == "3":
-                ticket["category"] = input("Enter new category: ")
+                search_ticket(current_user)
 
             elif choice == "4":
-                ticket["priority"] = input("Enter new priority: ")
+                print("\nLogging out....")
+                break
+
+            else:
+                print("Invalid choice, Please try again.")
+
+
+    # ==========================
+    # SUPPORT MENU
+    # ==========================
+
+    elif role == "support":
+
+        while True:
+
+            print("\n====== IT SUPPORT MENU ======")
+            print("1. View All Tickets")
+            print("2. Search Ticket")
+            print("3. Assign Ticket")
+            print("4. Update Ticket")
+            print("5. Delete Ticket")
+            print("6. Logout")
+
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                view_tickets()
+
+            elif choice == "2":
+                search_ticket()
+
+            elif choice == "3":
+                assign_ticket()
+
+            elif choice == "4":
+                update_ticket()
 
             elif choice == "5":
-                ticket["status"] = input("Enter new status: ")
+                delete_ticket()
+
+            elif choice == "6":
+                print("\nLogging out....")
+                break
 
             else:
-                print("Invalid choice.")
-                return
+                print("Invalid choice, Please try again.")
 
-            print("\nTicket updated successfully!")
-            return
 
-    print("\nTicket not found.")
+    # ==========================
+    # ADMIN MENU
+    # ==========================
 
-def delete_ticket():
-    delete_id = int(input("Enter ticket ID to delete: "))
+    elif role == "admin":
 
-    for ticket in tickets:
-        if ticket["id"] == delete_id:
-            print("\nTicket found.")
-            print("Title:", ticket["title"])
-            print("Status:", ticket["status"])
+        while True:
 
-            confirmation = input("Are you sure you want to delete this ticket? (yes/no): ")
+            print("\n====== ADMIN MENU ======")
+            print("1. Create Ticket")
+            print("2. View All Tickets")
+            print("3. Search Ticket")
+            print("4. Update Ticket")
+            print("5. Delete Ticket")
+            print("6. Logout")
 
-            if confirmation.lower() == "yes":
-                tickets.remove(ticket)
-                print("\nTicket deleted successfully!")
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                create_ticket(current_user)
+
+            elif choice == "2":
+                view_tickets()
+
+            elif choice == "3":
+                search_ticket()
+
+            elif choice == "4":
+                update_ticket()
+
+            elif choice == "5":
+                delete_ticket()
+
+            elif choice == "6":
+                print("\nLogging out....")
+                break
+
             else:
-                print("\nTicket was not deleted.")
-
-            return
-
-    print("\nTicket not found.")
-
-
-# ==============================
-# MAIN MENU
-# ==============================
-
-def show_menu():
-    print("\n========================================")
-    print("          IT HELP DESK SYSTEM")
-    print("========================================")
-    print("1. Create Ticket")
-    print("2. View All Tickets")
-    print("3. Search Ticket")
-    print("4. Update Ticket")
-    print("5. Delete Ticket")
-    print("6. Exit")
+                print("Invalid choice, Please try again.")
 
 
 # ==============================
 # MAIN PROGRAM
 # ==============================
+
 load_tickets()
-while True:
-    show_menu()
 
-    choice = input("Enter your choice: ")
+current_user = login()
 
-    if choice == "1":
-        create_ticket()
+if current_user:
+    print("\nWelcome,", current_user["username"])
+    print("Role:", current_user["role"])
 
-    elif choice == "2":
-        view_tickets()
+    show_role_menu(current_user)
 
-    elif choice == "3":
-        search_ticket()
-
-    elif choice == "4":
-        update_ticket()
-
-    elif choice == "5":
-        delete_ticket()
-
-    elif choice == "6":
-        print("\nThank you for using IT Help Desk System.")
-        break
-
-    else:
-        print("\nInvalid choice. Please try again.")

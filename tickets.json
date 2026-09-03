@@ -1,18 +1,43 @@
 [
     {
         "id": 1,
-        "title": "system",
+        "title": "core system error",
         "description": "500 error",
         "category": "software",
+        "priority": "high",
+        "status": "Open"
+    },
+    {
+        "id": 2,
+        "title": "Printer",
+        "description": "paper jam",
+        "category": "hardware",
         "priority": "low",
         "status": "Open"
     },
     {
-        "id": 1,
-        "title": "",
-        "description": "",
-        "category": "",
-        "priority": "",
+        "id": 3,
+        "title": "Date and Time",
+        "description": "wrong date and time",
+        "category": "software",
+        "priority": "Medium",
         "status": "Open"
+    },
+    {
+        "id": 5,
+        "title": "password reset",
+        "description": "expired",
+        "category": "software",
+        "priority": "High",
+        "status": "Open"
+    },
+    {
+        "id": 6,
+        "title": "Display",
+        "description": "zoomed out too much",
+        "category": "software",
+        "priority": "Low",
+        "status": "Open",
+        "created_by": "kanchan"
     }
 ]
