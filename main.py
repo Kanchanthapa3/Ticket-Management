@@ -5,6 +5,7 @@ from tickets import (
     load_tickets,
     create_ticket,
     view_tickets,
+    view_assigned_tickets,
     search_ticket,
     update_ticket,
     delete_ticket,
@@ -75,30 +76,34 @@ def show_role_menu(current_user):
 
             print("\n====== IT SUPPORT MENU ======")
             print("1. View All Tickets")
-            print("2. Search Ticket")
-            print("3. Assign Ticket")
-            print("4. Update Ticket")
-            print("5. Delete Ticket")
-            print("6. Logout")
+            print("2. My assigned Tickets")
+            print("3. Search Ticket")
+            print("4. Assign Ticket")
+            print("5. Update Ticket")
+            print("6. Delete Ticket")
+            print("7. Logout")
 
             choice = input("Enter your choice: ")
 
             if choice == "1":
                 view_tickets()
 
-            elif choice == "2":
-                search_ticket()
+            if choice == "2":
+                view_assigned_tickets(current_user)
 
             elif choice == "3":
-                assign_ticket()
+                search_ticket()
 
             elif choice == "4":
-                update_ticket()
+                assign_ticket()
 
             elif choice == "5":
-                delete_ticket()
+                update_ticket(current_user)
 
             elif choice == "6":
+                delete_ticket(current_user)
+
+            elif choice == "7":
                 print("\nLogging out....")
                 break
 
@@ -134,10 +139,10 @@ def show_role_menu(current_user):
                 search_ticket()
 
             elif choice == "4":
-                update_ticket()
+                update_ticket(current_user)
 
             elif choice == "5":
-                delete_ticket()
+                delete_ticket(current_user)
 
             elif choice == "6":
                 print("\nLogging out....")

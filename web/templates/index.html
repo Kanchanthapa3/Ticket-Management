@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>IT Help Desk System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- =========================
+         Navigation
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🛠 IT HELP DESK
+        </div>
+
+        <div class="user">
+            👤 Admin
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         Main Dashboard
+    ========================== -->
+
+    <main class="container">
+
+        <h1>Dashboard</h1>
+
+        <p class="subtitle">
+            Manage and monitor IT support tickets
+        </p>
+       <a href="/create-ticket" class="create-ticket-btn">
+            ＋ Create Ticket
+       </a>
+
+        <!-- =========================
+             Statistics
+        ========================== -->
+
+        <div class="stats">
+
+            <div class="card">
+
+                <h3>📊 Total Tickets</h3>
+
+                <p class="stat-number">{{ total_tickets }}</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>🔵 Open Tickets</h3>
+
+                <p class="stat-number">{{ open_tickets }}</p>
+
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>✅ Closed Tickets</h3>
+
+                <p class="stat-number">{{ closed_tickets }}</p>
+
+
+            </div>
+            <div class="card">
+                <h3>🔥 High Priority</h3>
+                <p class="stat-number">{{ high_priority_tickets }}</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             Recent Tickets Header
+        ========================== -->
+
+        <div class="section-header">
+
+            <h2>Recent Tickets</h2>
+
+            <span>
+                {{ total_tickets }} tickets
+            </span>
+
+        </div>
+
+
+        <!-- =========================
+             Ticket List
+        ========================== -->
+
+{% for ticket in tickets %}
+
+<a href="/ticket/{{ ticket.id }}" class="ticket-link">
+
+    <div class="ticket">
+
+
+        <!-- Ticket information -->
+
+        <div class="ticket-info">
+
+            <strong class="ticket-id">
+                #{{ ticket.id }}
+            </strong>
+
+
+            <div>
+
+                <div class="ticket-title">
+                    {{ ticket.title }}
+                </div>
+
+
+                <div class="ticket-category">
+                    {{ ticket.category }}
+                </div>
+
+
+                <div class="ticket-created">
+                    Created by {{ ticket.get("created_by", "Unknown") }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Priority -->
+
+        <span class="priority {{ ticket.priority|lower }}">
+            {{ ticket.priority }}
+        </span>
+
+
+        <!-- Status -->
+
+        <span class="status {{ ticket.status|lower }}">
+            {{ ticket.status }}
+        </span>
+
+
+    </div>
+
+</a>
+
+{% endfor %}
+
+    </main>
+
+
+</body>
+
+</html>

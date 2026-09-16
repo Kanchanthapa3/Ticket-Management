@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Ticket</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🖥 IT Help Desk
+        </div>
+
+        <div class="user">
+            Create Ticket
+        </div>
+
+    </nav>
+
+
+    <main class="container">
+
+        <div class="form-header">
+
+            <h1>Create New Ticket</h1>
+
+            <p class="subtitle">
+                Submit an IT issue and our support team will help you.
+            </p>
+
+        </div>
+
+
+        <div class="ticket-form-card">
+
+            <form  method="POST" action="/create-ticket">
+
+                <div class="form-group">
+
+                    <label for="title">
+                        Ticket Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="e.g. Printer is not working"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        placeholder="Describe the problem..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="category">
+                            Category
+                        </label>
+
+                        <select id="category" name="category">
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="hardware">
+                                Hardware
+                            </option>
+
+                            <option value="software">
+                                Software
+                            </option>
+
+                            <option value="network">
+                                Network
+                            </option>
+
+                            <option value="account">
+                                Account / Access
+                            </option>
+
+                            <option value="other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+                        <select id="priority" name="priority">
+
+                            <option value="">
+                                Select priority
+                            </option>
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium">
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="/" class="cancel-btn">
+                        ← Back
+                    </a>
+
+                    <button type="submit" class="submit-btn">
+                        🎫 Create Ticket
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

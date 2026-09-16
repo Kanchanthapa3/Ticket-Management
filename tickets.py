@@ -1,30 +1,47 @@
 import json
 import time
-from colors import RED, GREEN, YELLOW, BLUE, CYAN, RESET 
+from colors import RED, GREEN, YELLOW, BLUE, CYAN, RESET
+from auth import users
 
 
 tickets = []
 ticket_id = 1
 
+
+# ==============================
+# SAVE TICKETS
+# ==============================
+
 def save_tickets():
     with open("tickets.json", "w") as file:
         json.dump(tickets, file, indent=4)
+
+
+# ==============================
+# LOAD TICKETS
+# ==============================
 
 def load_tickets():
     global tickets
     global ticket_id
 
     try:
-         with open("tickets.json", "r") as file:
+        with open("tickets.json", "r") as file:
             tickets = json.load(file)
 
-         if tickets:
-             ticket_id = max(ticket["id"] for ticket in tickets) + 1
-         else:
-             ticket_id = 1
+        if tickets:
+            ticket_id = max(ticket["id"] for ticket in tickets) + 1
+        else:
+            ticket_id = 1
+
     except FileNotFoundError:
         tickets = []
         ticket_id = 1
+
+
+# ==============================
+# LOADING ANIMATION
+# ==============================
 
 def loading_animation(message):
     print(message)
@@ -43,6 +60,11 @@ def loading_animation(message):
 
     print()
 
+
+# ==============================
+# GET PRIORITY
+# ==============================
+
 def get_priority():
     while True:
         priority = input("Enter priority (High/Medium/Low): ")
@@ -50,20 +72,28 @@ def get_priority():
         if priority.lower() in ["high", "medium", "low"]:
             return priority.capitalize()
 
-        print(RED + "Invalid priority! Choose High, Medium, or Low." + RESET)
+        print(
+            RED + "Invalid priority! Choose High, Medium, or Low." + RESET
+        )
+
+
+# ==============================
+# GET STATUS
+# ==============================
 
 def get_status():
     while True:
-        status = input("Enter status (Open/ In Progress/ Closed):")
+        status = input("Enter status (Open/In Progress/Closed): ")
 
-        if status.lower() in ["open" , "in progress", "closed"]:
+        if status.lower() in ["open", "in progress", "closed"]:
             return status.title()
 
         print(RED + "Invalid status!" + RESET)
 
 
-
-
+# ==============================
+# CREATE TICKET
+# ==============================
 
 def create_ticket(current_user):
     global ticket_id
@@ -84,43 +114,73 @@ def create_ticket(current_user):
         "assigned_to": None
     }
 
-    def assign_ticket():
-        ticket_id_input = get_ticket_id()
-
-        for ticket in tickets:
-            if ticket["id"] == ticket_id_input:
-                break
-            else:
-                print(RED + "\nTicket not found." + RESET)
-                return
-            
-            assigned_to = input("Enter support username: ")
-
-            ticket["assigned_to"] = assigned_to
-
-            save_tickets()
-
     tickets.append(ticket)
 
     ticket_id += 1
+
     save_tickets()
 
     loading_animation("Creating ticket")
 
-    print(GREEN + " ✓ Ticket created successfully!" + RESET)
+    print(GREEN + "✓ Ticket created successfully!" + RESET)
     print("Your Ticket ID is:", ticket["id"])
+
+
+# ==============================
+# ASSIGN TICKET
+# ==============================
+
+def assign_ticket():
+    ticket_id_input = get_ticket_id()
+
+    for ticket in tickets:
+        if ticket["id"] == ticket_id_input:
+            break
+    else:
+        print(RED + "\nTicket not found." + RESET)
+        return
+
+    assigned_to = input("Enter support username: ")
+    support_users = [
+        user["username"]
+        for user in users
+        if user["role"] == "support"
+    
+    ]
+    if assigned_to not in support_users:
+        print(RED + "\n✗ Support user not found." + RESET)
+        return
+
+    ticket["assigned_to"] = assigned_to
+
+    save_tickets()
+
+    print(GREEN + "\n✓ Ticket assigned successfully!" + RESET)
+
+
+# ==============================
+# PRIORITY COLOR
+# ==============================
 
 def priority_color(priority):
 
     if priority.lower() == "high":
         return RED + priority.upper() + RESET
 
-    elif priority.lower()== "medium":
+    elif priority.lower() == "medium":
         return YELLOW + priority.upper() + RESET
 
-    elif priority.lower()== "low":
+    elif priority.lower() == "low":
         return GREEN + priority.upper() + RESET
-    
+
+    else:
+        return RESET + priority + RESET
+
+
+# ==============================
+# STATUS COLOR
+# ==============================
+
 def status_color(status):
 
     if status.lower() == "open":
@@ -136,10 +196,34 @@ def status_color(status):
         return RESET + status + RESET
 
 
+# ==============================
+# DISPLAY TICKET
+# ==============================
+
 def display_ticket(ticket):
-    print(CYAN + "\n╔══════════════════════════════════════════╗" + RESET)
-    print(CYAN + "║" + RESET + f"              🎫 TICKET #{ticket['id']:<3}            " + CYAN + "║" + RESET)
-    print(CYAN + "╠══════════════════════════════════════════╣" + RESET)
+
+    print(
+        CYAN
+        + "\n╔══════════════════════════════════════════╗"
+        + RESET
+    )
+
+    print(
+        CYAN
+        + "║"
+        + RESET
+        + f"              🎫 TICKET #{ticket['id']:<3}"
+        + "            "
+        + CYAN
+        + "║"
+        + RESET
+    )
+
+    print(
+        CYAN
+        + "╠══════════════════════════════════════════╣"
+        + RESET
+    )
 
     print(f"║ Title       : {ticket['title']}")
     print(f"║ Category    : {ticket['category']}")
@@ -156,33 +240,46 @@ def display_ticket(ticket):
 
     print(f"║ Description : {ticket['description']}")
 
-    print(CYAN + "╚══════════════════════════════════════════╝" + RESET)
+    print(
+        f"║ Created By  : {ticket.get('created_by', 'Unknown')}"
+    )
+
+    print(
+        f"║ Assigned To : {ticket.get('assigned_to', 'Not Assigned')}"
+    )
+
+    print(
+        CYAN
+        + "╚══════════════════════════════════════════╝"
+        + RESET
+    )
 
 
 # ==============================
 # VIEW ALL TICKETS
 # ==============================
 
-def view_tickets(current_user = None):
+def view_tickets(current_user=None):
 
     if current_user and current_user["role"] == "user":
-        user_tickets = [
-            ticket for ticket in tickets
-            if ticket.get("created_by") == current_user["username"]
 
+        user_tickets = [
+            ticket
+            for ticket in tickets
+            if ticket.get("created_by") == current_user["username"]
         ]
+
     else:
         user_tickets = tickets
+
     print("\n====== ALL TICKETS ======")
 
-    if len(tickets) == 0:
+    if len(user_tickets) == 0:
         print("No tickets found.")
         return
 
     for ticket in user_tickets:
         display_ticket(ticket)
-
-    print("Assigned To:", ticket.get("assigned_to", "Not Assigned"))
 
 
 # ==============================
@@ -190,99 +287,226 @@ def view_tickets(current_user = None):
 # ==============================
 
 def search_ticket(current_user=None):
+
     if current_user and current_user["role"] == "user":
+
         searchable_tickets = [
-            ticket for ticket in tickets
+            ticket
+            for ticket in tickets
             if ticket.get("created_by") == current_user["username"]
         ]
+
     else:
         searchable_tickets = tickets
+
     search_id = get_ticket_id()
 
     for ticket in searchable_tickets:
+
         if ticket["id"] == search_id:
+
             print("\n====== TICKET FOUND ======")
+
             print("Ticket ID:", ticket["id"])
             print("Title:", ticket["title"])
             print("Description:", ticket["description"])
             print("Category:", ticket["category"])
             print("Priority:", ticket["priority"])
             print("Status:", ticket["status"])
+            print(
+                "Created By:",
+                ticket.get("created_by", "Unknown")
+            )
+            print(
+                "Assigned To:",
+                ticket.get("assigned_to", "Not Assigned")
+            )
+
             return
 
     print("\nTicket not found.")
 
-def update_ticket():
+
+# ==============================
+# UPDATE TICKET
+# ==============================
+
+def update_ticket(current_user=None):
+
     update_id = get_ticket_id()
 
     for ticket in tickets:
         if ticket["id"] == update_id:
+            break
+    else:
+        print(RED + "\nTicket not found." + RESET)
+        return
 
-            print("\n====== UPDATE TICKET ======")
-            print("1. Title")
-            print("2. Description")
-            print("3. Category")
-            print("4. Priority")
-            print("5. Status")
+    # Check support user's permission
+    if current_user and current_user["role"] == "support":
 
-            choice = input("What do you want to update? ")
+        if ticket.get("assigned_to") != current_user["username"]:
 
-            if choice == "1":
-                ticket["title"] = input("Enter new title: ")
+            print(
+                RED
+                + "\n✗ You cannot update this ticket."
+                + RESET
+            )
 
-            elif choice == "2":
-                ticket["description"] = input("Enter new description: ")
+            print(
+                "This ticket is assigned to:",
+                ticket.get("assigned_to", "Not Assigned")
+            )
 
-            elif choice == "3":
-                ticket["category"] = input("Enter new category: ")
+            return
 
-            elif choice == "4":
-                ticket["priority"] = get_priority()
+    print("\n====== UPDATE TICKET ======")
 
-            elif choice == "5":
-                ticket["status"] = get_status()
-            else:
-                print("Invalid choice.")
-                return
+    print("1. Title")
+    print("2. Description")
+    print("3. Category")
+    print("4. Priority")
+    print("5. Status")
 
-            save_tickets()
+    choice = input("What do you want to update? ")
 
-            print (GREEN + "\n✓ Ticket updated successfully!" + RESET)
+    if choice == "1":
 
-    print("\nTicket not found.")
-    
+        ticket["title"] = input(
+            "Enter new title: "
+        )
+
+    elif choice == "2":
+
+        ticket["description"] = input(
+            "Enter new description: "
+        )
+
+    elif choice == "3":
+
+        ticket["category"] = input(
+            "Enter new category: "
+        )
+
+    elif choice == "4":
+
+        ticket["priority"] = get_priority()
+
+    elif choice == "5":
+
+        ticket["status"] = get_status()
+
+    else:
+
+        print("Invalid choice.")
+        return
+
+    save_tickets()
+
+    print(
+        GREEN
+        + "\n✓ Ticket updated successfully!"
+        + RESET
+    )
+
+
+# ==============================
+# GET TICKET ID
+# ==============================
 
 def get_ticket_id():
-    while True:
-        try:
-            ticket_id= int(input("Enter ticket ID: "))
 
-            if ticket_id > 0:
-                return ticket_id
-            print ( RED+ "Ticket ID must be greater than 0." + RESET)
+    while True:
+
+        try:
+
+            ticket_id_input = int(
+                input("Enter ticket ID: ")
+            )
+
+            if ticket_id_input > 0:
+                return ticket_id_input
+
+            print(
+                RED
+                + "Ticket ID must be greater than 0."
+                + RESET
+            )
 
         except ValueError:
-            print(RED + " Please enter a valid number." + RESET)
 
-def delete_ticket():
+            print(
+                RED
+                + "Please enter a valid number."
+                + RESET
+            )
+
+
+# ==============================
+# DELETE TICKET
+# ==============================
+
+def delete_ticket(current_user=None):
+
     delete_id = get_ticket_id()
 
     for ticket in tickets:
+
+    
+
         if ticket["id"] == delete_id:
+
             print("\nTicket found.")
             print("Title:", ticket["title"])
             print("Status:", ticket["status"])
 
-            confirmation = input("Are you sure you want to delete this ticket? (yes/no): ")
+            if current_user and current_user['role']=='support':
+
+                if ticket.get("assigned_to")!= current_user["username"]:
+                    print(
+                        RED + "\n✗ You cannot delete this ticket." + RESET
+                    )
+                    print("This ticket is assigned to: ", ticket.get("assignet_to", "Not Assigned"))
+                    return
+
+            confirmation = input(
+                "Are you sure you want to delete this ticket? (yes/no): "
+            )
 
             if confirmation.lower() == "yes":
+
                 tickets.remove(ticket)
+
                 save_tickets()
-                print(GREEN + "\n✓ Ticket deleted successfully!" + RESET)
+
+                print(
+                    GREEN
+                    + "\n✓ Ticket deleted successfully!"
+                    + RESET
+                )
+
             else:
-                print("\nTicket was not deleted.")
+
+                print(
+                    "\nTicket was not deleted."
+                )
 
             return
 
     print("\nTicket not found.")
-        
+
+def view_assigned_tickets(current_user):
+    assigned_tickets = [
+        ticket for ticket in tickets
+        if ticket.get("assigned_to") == current_user
+        ["username"]
+
+    ]
+    if len(assigned_tickets) == 0:
+        print(YELLOW +"\nNo tickets are assigned to you." + RESET)
+        return
+
+    print(CYAN + "\nn====== MY ASSIGNED TICKETS ======" + RESET)
+
+    for ticket in assigned_tickets:
+        display_ticket(ticket)

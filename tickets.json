@@ -5,7 +5,8 @@
         "description": "500 error",
         "category": "software",
         "priority": "high",
-        "status": "Open"
+        "status": "Open",
+        "assigned_to": "kanchan"
     },
     {
         "id": 2,
@@ -13,7 +14,8 @@
         "description": "paper jam",
         "category": "hardware",
         "priority": "low",
-        "status": "Open"
+        "status": "Open",
+        "assigned_to": "support"
     },
     {
         "id": 3,
@@ -39,5 +41,25 @@
         "priority": "Low",
         "status": "Open",
         "created_by": "kanchan"
+    },
+    {
+        "id": 7,
+        "title": "Password error",
+        "description": "locked out",
+        "category": "software",
+        "priority": "Medium",
+        "status": "Open",
+        "created_by": "pratiksha",
+        "assigned_to": null
+    },
+    {
+        "id": 8,
+        "title": "Laptop WiFi Problem",
+        "description": "The laptop cannot connect to the office WiFi.\r\n",
+        "category": "network",
+        "priority": "High",
+        "status": "Open",
+        "created_by": "web_user",
+        "assigned_to": null
     }
 ]
