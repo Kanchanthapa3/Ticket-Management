@@ -94,6 +94,90 @@
         <div class="section-header">
 
             <h2>Recent Tickets</h2>
+            <form method="GET" action="/" class="search-form">
+                <input
+                   type="text"
+                   name="search"
+                   placeholder="🔎 Search tickets..."
+                   value="{{ search }}"
+                >
+                <select name="status">
+
+        <option value="">All Status</option>
+
+        <option value="open"
+            {% if status == "open" %}selected{% endif %}>
+            Open
+        </option>
+
+        <option value="closed"
+            {% if status == "closed" %}selected{% endif %}>
+            Closed
+        </option>
+
+    </select>
+
+
+    <select name="priority">
+
+        <option value="">All Priority</option>
+
+        <option value="high"
+            {% if priority == "high" %}selected{% endif %}>
+            High
+        </option>
+
+        <option value="medium"
+            {% if priority == "medium" %}selected{% endif %}>
+            Medium
+        </option>
+
+        <option value="low"
+            {% if priority == "low" %}selected{% endif %}>
+            Low
+        </option>
+
+    </select>
+    <select name="category">
+
+        <option value="">All Categories</option>
+
+        <option value="hardware"
+            {% if category == "hardware" %}selected{% endif %}>
+            Hardware
+        </option>
+
+        <option value="software"
+            {% if category == "software" %}selected{% endif %}>
+            Software
+        </option>
+
+        <option value="network"
+            {% if category == "network" %}selected{% endif %}>
+            Netword
+        </option>
+
+        <option value="account"
+            {% if category == "account" %}selected{% endif %}>
+            Account
+        </option>
+
+        <option value="other"
+            {% if category == "other" %}selected{% endif %}>
+            Other
+        </option>
+
+
+    </select>
+
+                <button type="submit">
+                    Search
+                </button>
+                <a href="/" class="clear-filter-btn">
+                    Clear
+                </a>
+            </form>
+        
 
             <span>
                 {{ total_tickets }} tickets
@@ -136,6 +220,10 @@
 
                 <div class="ticket-created">
                     Created by {{ ticket.get("created_by", "Unknown") }}
+                </div>
+
+                <div class="ticket-created">
+                     Assigned to {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
                 </div>
 
             </div>

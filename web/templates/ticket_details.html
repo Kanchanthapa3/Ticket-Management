@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Ticket #{{ ticket.id }}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            🛠 IT HELP DESK
+        </div>
+
+        <div class="user">
+            🎫 Ticket #{{ ticket.id }}
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+
+    <main class="container">
+
+        <a href="/" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+
+        <div class="ticket-details-card">
+
+            <div class="ticket-details-header">
+
+                <div>
+
+                    <span class="ticket-details-id">
+                        Ticket #{{ ticket.id }}
+                    </span>
+
+                    <h1>
+                        {{ ticket.title }}
+                    </h1>
+
+                </div>
+
+
+                <span class="status {{ ticket.status|lower }}">
+                    {{ ticket.status }}
+                </span>
+
+            </div>
+
+
+            <div class="ticket-details-info">
+
+                <div class="detail-item">
+                    <span>Category</span>
+                    <strong>{{ ticket.category }}</strong>
+                </div>
+
+
+                <div class="detail-item">
+                    <span>Priority</span>
+
+                    <strong class="priority {{ ticket.priority|lower }}">
+                        {{ ticket.priority }}
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+                    <span>Created By</span>
+                    <strong>
+                        {{ ticket.get("created_by", "Unknown") }}
+                    </strong>
+                </div>
+
+
+                <div class="detail-item">
+                    <span>Assigned To</span>
+                    <strong>
+                        {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="description-section">
+
+                <h3>Description</h3>
+
+                <p>
+                    {{ ticket.description }}
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
