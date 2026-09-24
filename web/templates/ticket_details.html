@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Ticket #{{ ticket.id }}</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
-
 
 <body>
 
     <!-- Navigation -->
-
     <nav class="navbar">
-
         <div class="logo">
             🛠 IT HELP DESK
         </div>
@@ -24,25 +24,25 @@
         <div class="user">
             🎫 Ticket #{{ ticket.id }}
         </div>
-
     </nav>
 
 
     <!-- Main Content -->
-
     <main class="container">
 
+        <!-- Back to Dashboard -->
         <a href="/" class="back-link">
             ← Back to Dashboard
         </a>
 
 
+        <!-- Ticket Details Card -->
         <div class="ticket-details-card">
 
+            <!-- Ticket Header -->
             <div class="ticket-details-header">
 
                 <div>
-
                     <span class="ticket-details-id">
                         Ticket #{{ ticket.id }}
                     </span>
@@ -50,9 +50,7 @@
                     <h1>
                         {{ ticket.title }}
                     </h1>
-
                 </div>
-
 
                 <span class="status {{ ticket.status|lower }}">
                     {{ ticket.status }}
@@ -61,34 +59,43 @@
             </div>
 
 
+            <!-- Ticket Information -->
             <div class="ticket-details-info">
 
+                <!-- Category -->
                 <div class="detail-item">
                     <span>Category</span>
-                    <strong>{{ ticket.category }}</strong>
+
+                    <strong>
+                        {{ ticket.category }}
+                    </strong>
                 </div>
 
 
+                <!-- Priority -->
                 <div class="detail-item">
                     <span>Priority</span>
 
                     <strong class="priority {{ ticket.priority|lower }}">
                         {{ ticket.priority }}
                     </strong>
-
                 </div>
 
 
+                <!-- Created By -->
                 <div class="detail-item">
                     <span>Created By</span>
+
                     <strong>
                         {{ ticket.get("created_by", "Unknown") }}
                     </strong>
                 </div>
 
 
+                <!-- Assigned To -->
                 <div class="detail-item">
                     <span>Assigned To</span>
+
                     <strong>
                         {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
                     </strong>
@@ -97,6 +104,7 @@
             </div>
 
 
+            <!-- Description -->
             <div class="description-section">
 
                 <h3>Description</h3>
@@ -107,6 +115,167 @@
 
             </div>
 
+
+            <!-- Admin Assignment Section -->
+            {% if role == "admin" %}
+
+            <div class="assignment-section">
+
+                <h3>Assign Ticket</h3>
+
+                <form
+                    method="POST"
+                    action="/ticket/{{ ticket.id }}/assign"
+                >
+
+                    <div class="form-group">
+
+                        <label for="assigned_to">
+                            Assign to Support Staff
+                        </label>
+
+                        <select
+                            name="assigned_to"
+                            id="assigned_to"
+                            required
+                        >
+                            <option value="">
+                                Select Support Staff
+                            </option>
+
+                            <option
+                                value="support"
+                                {% if ticket.get("assigned_to") == "support" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Support
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <button type="submit" class="create-btn">
+                        👤 Assign Ticket
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Update Ticket Section -->
+            {% if role == "admin" or role == "support" %}
+
+            <div class="update-section">
+
+                <h3>Update Ticket</h3>
+
+                <form
+                    method="POST"
+                    action="{{ url_for('update_ticket', ticket_id=ticket.id) }}"
+                >
+
+                    <!-- Status -->
+                    <div class="form-group">
+
+                        <label for="status">
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            id="status"
+                        >
+                            <option
+                                value="Open"
+                                {% if ticket.status|lower == "open" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Open
+                            </option>
+
+                            <option
+                                value="In Progress"
+                                {% if ticket.status|lower == "in progress" %}
+                                    selected
+                                {% endif %}
+                            >
+                                In Progress
+                            </option>
+
+                            <option
+                                value="Closed"
+                                {% if ticket.status|lower == "closed" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Closed
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <!-- Priority -->
+                    <div class="form-group">
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+                        <select
+                            name="priority"
+                            id="priority"
+                        >
+                            <option
+                                value="Low"
+                                {% if ticket.priority|lower == "low" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Low
+                            </option>
+
+                            <option
+                                value="Medium"
+                                {% if ticket.priority|lower == "medium" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Medium
+                            </option>
+
+                            <option
+                                value="High"
+                                {% if ticket.priority|lower == "high" %}
+                                    selected
+                                {% endif %}
+                            >
+                                High
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <!-- Update Button -->
+                    <button
+                        type="submit"
+                        class="create-btn"
+                    >
+                        💾 Update Ticket
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
 
         </div>
 

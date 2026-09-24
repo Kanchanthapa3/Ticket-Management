@@ -1,162 +1,276 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Create Ticket</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Create Ticket - IT Help Desk</title>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+>
+```
+
 </head>
 
 <body>
 
-    <nav class="navbar">
+```
+<!-- =========================
+     Navigation
+========================== -->
 
-        <div class="logo">
-            🖥 IT Help Desk
-        </div>
+<nav class="navbar">
+
+    <div class="logo">
+        🛠 IT HELP DESK
+    </div>
+
+    <div class="navbar-right">
 
         <div class="user">
-            Create Ticket
+            👤 {{ session.get("username") }}
         </div>
 
-    </nav>
+        <a
+            href="/logout"
+            class="logout-btn"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</nav>
 
 
-    <main class="container">
+<!-- =========================
+     Main Content
+========================== -->
 
-        <div class="form-header">
+<main class="container">
 
-            <h1>Create New Ticket</h1>
+
+    <!-- =========================
+         Flash Messages
+    ========================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            <div class="flash-messages">
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message {{ category }}">
+                        ⚠️ {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================
+         Page Heading
+    ========================== -->
+
+    <div class="section-header">
+
+        <div>
+
+            <h1>
+                Create New Ticket
+            </h1>
 
             <p class="subtitle">
-                Submit an IT issue and our support team will help you.
+                Submit an IT support request.
             </p>
 
         </div>
 
 
-        <div class="ticket-form-card">
+        <a
+            href="/"
+            class="clear-filter-btn"
+        >
+            ← Back to Dashboard
+        </a>
 
-            <form  method="POST" action="/create-ticket">
-
-                <div class="form-group">
-
-                    <label for="title">
-                        Ticket Title
-                    </label>
-
-                    <input
-                        type="text"
-                        id="title"
-                        name="title"
-                        placeholder="e.g. Printer is not working"
-                    >
-
-                </div>
+    </div>
 
 
-                <div class="form-group">
+    <!-- =========================
+         Create Ticket Form
+    ========================== -->
 
-                    <label for="description">
-                        Description
-                    </label>
+    <div class="form-card">
 
-                    <textarea
-                        id="description"
-                        name="description"
-                        rows="5"
-                        placeholder="Describe the problem..."
-                    ></textarea>
-
-                </div>
+        <form
+            method="POST"
+            action="/create-ticket"
+        >
 
 
-                <div class="form-row">
+            <!-- Title -->
 
-                    <div class="form-group">
+            <div class="form-group">
 
-                        <label for="category">
-                            Category
-                        </label>
+                <label for="title">
+                    Ticket Title
+                </label>
 
-                        <select id="category" name="category">
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Example: Laptop WiFi not working"
+                    required
+                >
 
-                            <option value="">
-                                Select category
-                            </option>
-
-                            <option value="hardware">
-                                Hardware
-                            </option>
-
-                            <option value="software">
-                                Software
-                            </option>
-
-                            <option value="network">
-                                Network
-                            </option>
-
-                            <option value="account">
-                                Account / Access
-                            </option>
-
-                            <option value="other">
-                                Other
-                            </option>
-
-                        </select>
-
-                    </div>
+            </div>
 
 
-                    <div class="form-group">
+            <!-- Description -->
 
-                        <label for="priority">
-                            Priority
-                        </label>
+            <div class="form-group">
 
-                        <select id="priority" name="priority">
+                <label for="description">
+                    Description
+                </label>
 
-                            <option value="">
-                                Select priority
-                            </option>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    placeholder="Describe the problem in detail..."
+                    required
+                ></textarea>
 
-                            <option value="Low">
-                                Low
-                            </option>
-
-                            <option value="Medium">
-                                Medium
-                            </option>
-
-                            <option value="High">
-                                High
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
+            </div>
 
 
-                <div class="form-actions">
+            <!-- Category -->
 
-                    <a href="/" class="cancel-btn">
-                        ← Back
-                    </a>
+            <div class="form-group">
 
-                    <button type="submit" class="submit-btn">
-                        🎫 Create Ticket
-                    </button>
+                <label for="category">
+                    Category
+                </label>
 
-                </div>
+                <select
+                    id="category"
+                    name="category"
+                    required
+                >
 
-            </form>
+                    <option value="">
+                        Select Category
+                    </option>
 
-        </div>
+                    <option value="hardware">
+                        Hardware
+                    </option>
 
-    </main>
+                    <option value="software">
+                        Software
+                    </option>
+
+                    <option value="network">
+                        Network
+                    </option>
+
+                    <option value="account">
+                        Account
+                    </option>
+
+                    <option value="other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Priority -->
+
+            <div class="form-group">
+
+                <label for="priority">
+                    Priority
+                </label>
+
+                <select
+                    id="priority"
+                    name="priority"
+                    required
+                >
+
+                    <option value="">
+                        Select Priority
+                    </option>
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="form-actions">
+
+                <a
+                    href="/"
+                    class="clear-filter-btn"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="create-btn"
+                >
+                    🎫 Create Ticket
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+</main>
+```
 
 </body>
+
 </html>

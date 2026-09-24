@@ -13,8 +13,8 @@
         "title": "Printer",
         "description": "paper jam",
         "category": "hardware",
-        "priority": "low",
-        "status": "Open",
+        "priority": "Low",
+        "status": "In Progress",
         "assigned_to": "support"
     },
     {
@@ -23,7 +23,7 @@
         "description": "wrong date and time",
         "category": "software",
         "priority": "Medium",
-        "status": "Open"
+        "status": "Closed"
     },
     {
         "id": 5,
@@ -60,7 +60,7 @@
         "priority": "High",
         "status": "Open",
         "created_by": "web_user",
-        "assigned_to": null
+        "assigned_to": "support"
     },
     {
         "id": 9,
@@ -70,6 +70,26 @@
         "priority": "",
         "status": "Open",
         "created_by": "web_user",
+        "assigned_to": null
+    },
+    {
+        "id": 10,
+        "title": "Excel issue",
+        "description": " I can't open my excel",
+        "category": "software",
+        "priority": "High",
+        "status": "Open",
+        "created_by": "kanchan",
+        "assigned_to": null
+    },
+    {
+        "id": 11,
+        "title": "Monitor",
+        "description": "Display is not showing",
+        "category": "hardware",
+        "priority": "High",
+        "status": "Open",
+        "created_by": "support",
         "assigned_to": null
     }
 ]

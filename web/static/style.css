@@ -841,3 +841,422 @@ h1 {
     background: #e2e8f0;
     color: #1e293b;
 }
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logout-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* =========================================
+   TICKET STATUS CHART
+========================================= */
+
+.chart-section {
+    margin-top: 35px;
+    padding: 25px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+
+.chart-section .section-header {
+    margin-bottom: 25px;
+}
+
+
+.chart-section h2 {
+    margin-bottom: 5px;
+}
+
+
+.status-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+
+.chart-bar {
+    width: 100%;
+}
+
+
+.chart-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+
+.chart-label strong {
+    font-size: 16px;
+}
+
+
+.bar-background {
+    width: 100%;
+    height: 12px;
+    background: #eef2f7;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+
+.bar-fill {
+    height: 100%;
+    border-radius: 20px;
+
+    animation: chartGrow 1s ease;
+}
+
+
+
+.open-bar {
+    background: #22c55e;
+}
+
+
+.progress-bar {
+    background: #f59e0b;
+}
+
+
+.closed-bar {
+    background: #ef4444;
+}
+
+
+/* Chart Animation */
+
+@keyframes chartGrow {
+
+    from {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    to {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+}
+
+/* =========================================
+   DASHBOARD ANIMATIONS
+========================================= */
+
+.container {
+    animation: pageFadeIn 0.6s ease;
+}
+
+
+@keyframes pageFadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.stats .card {
+    animation: cardAppear 0.6s ease;
+}
+
+
+.stats .card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+
+.stats .card:nth-child(2) {
+    animation-delay: 0.10s;
+}
+
+
+.stats .card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+
+.stats .card:nth-child(4) {
+    animation-delay: 0.20s;
+}
+
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.ticket-link {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.ticket-link:hover {
+    transform: translateY(-3px);
+}
+
+
+.ticket {
+    transition:
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.create-ticket-btn,
+.login-btn,
+.logout-btn,
+.search-form button,
+.clear-filter-btn {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.create-ticket-btn:hover,
+.login-btn:hover,
+.logout-btn:hover,
+.search-form button:hover,
+.clear-filter-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+========================================= */
+
+@media (max-width: 768px) {
+
+    /* Navbar */
+
+    .navbar {
+        padding: 15px 20px;
+    }
+
+
+    .navbar-right {
+        gap: 10px;
+    }
+
+
+    .user {
+        font-size: 14px;
+    }
+
+
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+
+    /* Main Container */
+
+    .container {
+        width: 92%;
+        margin: 25px auto;
+    }
+
+
+    .container h1 {
+        font-size: 28px;
+    }
+
+
+    /* Statistics */
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+
+    .card {
+        padding: 18px;
+    }
+
+
+    .card h3 {
+        font-size: 14px;
+    }
+
+
+    .stat-number {
+        font-size: 28px;
+    }
+
+
+    /* Create Ticket Button */
+
+    .create-ticket-btn {
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+
+    /* Section Header */
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+
+    /* Search */
+
+    .search-form {
+        width: 100%;
+        flex-direction: column;
+    }
+
+
+    .search-form input,
+    .search-form select,
+    .search-form button,
+    .clear-filter-btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* Ticket */
+
+    .ticket {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+
+    .ticket-info {
+        width: 100%;
+    }
+
+
+    .priority,
+    .status {
+        display: inline-block;
+    }
+
+
+    /* Chart */
+
+    .chart-section {
+        padding: 20px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+
+    .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+
+    .container h1 {
+        font-size: 24px;
+    }
+
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+
+    .chart-label {
+        font-size: 14px;
+    }
+
+}
+/* =========================================
+   FLASH MESSAGES
+========================================= */
+
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+
+.flash-message {
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    animation: flashAppear 0.3s ease;
+}
+
+
+.flash-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+
+@keyframes flashAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
