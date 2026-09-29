@@ -58,7 +58,7 @@
         "description": "The laptop cannot connect to the office WiFi.\r\n",
         "category": "network",
         "priority": "High",
-        "status": "Open",
+        "status": "Closed",
         "created_by": "web_user",
         "assigned_to": "support"
     },

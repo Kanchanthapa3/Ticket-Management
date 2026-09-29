@@ -26,564 +26,745 @@
 
 ```
 <!-- =========================
-     Navigation
+     Application Layout
 ========================== -->
 
-<nav class="navbar">
-
-    <div class="logo">
-        🛠 IT HELP DESK
-    </div>
-
-    <div class="navbar-right">
-
-        <div class="user">
-            👤 {{ username }}
-        </div>
-
-        <a href="/logout" class="logout-btn">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
-
-
-<!-- =========================
-     Main Dashboard
-========================== -->
-
-<main class="container">
-
-    <!-- Dashboard Heading -->
-
-    <h1>
-
-        {% if role == "admin" %}
-
-            Admin Dashboard
-
-        {% elif role == "support" %}
-
-            Support Dashboard
-
-        {% else %}
-
-            My Dashboard
-
-        {% endif %}
-
-    </h1>
-
-
-    <p class="subtitle">
-
-        {% if role == "admin" %}
-
-            Manage tickets and monitor your IT Help Desk.
-
-        {% elif role == "support" %}
-
-            View and manage tickets assigned to you.
-
-        {% else %}
-
-            Create and track your IT support tickets.
-
-        {% endif %}
-
-    </p>
-
-
-    <!-- Create Ticket Button -->
-
-    <a
-        href="/create-ticket"
-        class="create-ticket-btn"
-    >
-        ＋ Create Ticket
-    </a>
+<div class="app-layout">
 
 
     <!-- =========================
-         Statistics
+         Sidebar
     ========================== -->
 
-    <div class="stats">
+    <aside class="sidebar">
 
-        <!-- Total Tickets -->
+        <!-- Logo -->
 
-        <div class="card">
-
-            <h3>
-                📊 Total Tickets
-            </h3>
-
-            <p class="stat-number">
-                {{ total_tickets }}
-            </p>
-
+        <div class="sidebar-logo">
+            🛠
+            <span>IT Help Desk</span>
         </div>
 
 
-        <!-- Open Tickets -->
+        <!-- Navigation -->
 
-        <div class="card">
-
-            <h3>
-                🔵 Open Tickets
-            </h3>
-
-            <p class="stat-number">
-                {{ open_tickets }}
-            </p>
-
-        </div>
-
-
-        <!-- Closed Tickets -->
-
-        <div class="card">
-
-            <h3>
-                ✅ Closed Tickets
-            </h3>
-
-            <p class="stat-number">
-                {{ closed_tickets }}
-            </p>
-
-        </div>
-
-
-        <!-- High Priority -->
-
-        <div class="card">
-
-            <h3>
-                🔥 High Priority
-            </h3>
-
-            <p class="stat-number">
-                {{ high_priority_tickets }}
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         Recent Tickets Header
-    ========================== -->
-
-    <div class="section-header">
-
-        <h2>
-            Recent Tickets
-        </h2>
-
-
-        <!-- =========================
-             Search and Filters
-        ========================== -->
-
-        <form
-            method="GET"
-            action="/"
-            class="search-form"
-        >
-
-            <!-- Search -->
-
-            <input
-                type="text"
-                name="search"
-                placeholder="🔎 Search tickets..."
-                value="{{ search }}"
-            >
-
-
-            <!-- Status Filter -->
-
-            <select name="status">
-
-                <option value="">
-                    All Status
-                </option>
-
-
-                <option
-                    value="open"
-                    {% if status == "open" %}selected{% endif %}
-                >
-                    Open
-                </option>
-
-
-                <option
-                    value="in progress"
-                    {% if status == "in progress" %}selected{% endif %}
-                >
-                    In Progress
-                </option>
-
-
-                <option
-                    value="closed"
-                    {% if status == "closed" %}selected{% endif %}
-                >
-                    Closed
-                </option>
-
-            </select>
-
-
-            <!-- Priority Filter -->
-
-            <select name="priority">
-
-                <option value="">
-                    All Priority
-                </option>
-
-
-                <option
-                    value="high"
-                    {% if priority == "high" %}selected{% endif %}
-                >
-                    High
-                </option>
-
-
-                <option
-                    value="medium"
-                    {% if priority == "medium" %}selected{% endif %}
-                >
-                    Medium
-                </option>
-
-
-                <option
-                    value="low"
-                    {% if priority == "low" %}selected{% endif %}
-                >
-                    Low
-                </option>
-
-            </select>
-
-
-            <!-- Category Filter -->
-
-            <select name="category">
-
-                <option value="">
-                    All Categories
-                </option>
-
-
-                <option
-                    value="hardware"
-                    {% if category == "hardware" %}selected{% endif %}
-                >
-                    Hardware
-                </option>
-
-
-                <option
-                    value="software"
-                    {% if category == "software" %}selected{% endif %}
-                >
-                    Software
-                </option>
-
-
-                <option
-                    value="network"
-                    {% if category == "network" %}selected{% endif %}
-                >
-                    Network
-                </option>
-
-
-                <option
-                    value="account"
-                    {% if category == "account" %}selected{% endif %}
-                >
-                    Account
-                </option>
-
-
-                <option
-                    value="other"
-                    {% if category == "other" %}selected{% endif %}
-                >
-                    Other
-                </option>
-
-            </select>
-
-
-            <!-- Search Button -->
-
-            <button type="submit">
-                Search
-            </button>
-
-
-            <!-- Clear Filters -->
+        <nav class="sidebar-nav">
 
             <a
                 href="/"
-                class="clear-filter-btn"
+                class="sidebar-link {% if request.path == '/' %}active{% endif %}"
             >
-                Clear
+                🏠
+                <span>Dashboard</span>
             </a>
 
-        </form>
+
+            <a
+                href="/tickets"
+                class="sidebar-link {% if request.path == '/tickets' %}active{% endif %}"
+            >
+                🎫
+                <span>Tickets</span>
+            </a>
+            {% if role == "admin" or role == "user" %}
 
 
-        <!-- Ticket Count -->
+            <a
+                href="/create-ticket"
+                class="sidebar-link {% if request.path == '/tickets' %}active{% endif %}"
+            >
+                ➕
+                <span>New Ticket</span>
+            </a>
+            {% endif %}
 
-        <span>
-            {{ total_tickets }} tickets
-        </span>
-
-    </div>
+        </nav>
 
 
-    <!-- =========================
-         Ticket List
-    ========================== -->
+        <!-- Sidebar Bottom -->
 
-    {% for ticket in tickets %}
+        <div class="sidebar-bottom">
 
-    <a
-        href="/ticket/{{ ticket.id }}"
-        class="ticket-link"
-    >
+            <!-- User Information -->
 
-        <div class="ticket">
+            <div class="sidebar-user">
 
-            <!-- Ticket Information -->
-
-            <div class="ticket-info">
-
-                <!-- Ticket ID -->
-
-                <strong class="ticket-id">
-                    #{{ ticket.id }}
-                </strong>
-
+                👤
 
                 <div>
 
-                    <!-- Title -->
+                    <strong>
+                        {{ session.get("username") }}
+                    </strong>
 
-                    <div class="ticket-title">
-                        {{ ticket.title }}
-                    </div>
-
-
-                    <!-- Category -->
-
-                    <div class="ticket-category">
-                        {{ ticket.category }}
-                    </div>
-
-
-                    <!-- Created By -->
-
-                    <div class="ticket-created">
-                        Created by
-                        {{ ticket.get("created_by", "Unknown") }}
-                    </div>
-
-
-                    <!-- Assigned To -->
-
-                    <div class="ticket-created">
-                        Assigned to
-                        {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
-                    </div>
+                    <small>
+                        {{ session.get("role")|capitalize }}
+                    </small>
 
                 </div>
 
             </div>
 
 
-            <!-- Priority -->
+            <!-- Logout -->
 
-            <span
-                class="priority {{ ticket.priority|lower }}"
+            <a
+                href="/logout"
+                class="sidebar-link logout-link"
             >
-                {{ ticket.priority }}
-            </span>
-
-
-            <!-- Status -->
-
-            <span
-                class="status {{ ticket.status|lower }}"
-            >
-                {{ ticket.status }}
-            </span>
+                🚪
+                <span>Logout</span>
+            </a>
 
         </div>
 
-    </a>
+    </aside>
 
-    {% else %}
-
-    <!-- No Tickets -->
-
-    <div class="empty-state">
-
-        <h3>
-            🎫 No Tickets Found
-        </h3>
-
-        <p>
-            There are no tickets matching your current filters.
-        </p>
-
-    </div>
-
-    {% endfor %}
 
 
     <!-- =========================
-         Ticket Status Chart
+         Main Content
     ========================== -->
 
-    <div class="chart-section">
+    <div class="main-content">
 
-        <!-- Chart Header -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            ☰
+        </button>
 
-        <div class="section-header">
 
-            <div>
+        <!-- =========================
+             Navigation Bar
+        ========================== -->
 
-                <h2>
-                    Ticket Status Overview
-                </h2>
+        <nav class="navbar">
+
+            <div class="page-context">
+                {% if request.path == "/" %}
+                  Dashboard
+                {% elif request.path == "/tickets" %}
+                  Tickets
+                {% elif request.path == "/create-ticket" %}
+                  New Ticket
+                {% else %}
+                  IT Help Desk
+                {% endif %}
+            </div>
+
+
+            <div class="navbar-right">
+
+                <div class="user">
+                    👤 {{ username }}
+                </div>
+
+
+                <a
+                    href="/logout"
+                    class="logout-btn"
+                >
+                    Logout
+                </a>
+
+            </div>
+
+        </nav>
+
+
+
+        <!-- =========================
+             Dashboard
+        ========================== -->
+
+        <main class="container">
+
+
+            <!-- Dashboard Heading -->
+
+            <section class="dashboard-header">
+
+                <h1>
+
+                    {% if role == "admin" %}
+
+                        Admin Dashboard
+
+                    {% elif role == "support" %}
+
+                        Support Dashboard
+
+                    {% else %}
+
+                        My Dashboard
+
+                    {% endif %}
+
+                </h1>
+
 
                 <p class="subtitle">
-                    Current status of your tickets
+
+                    {% if role == "admin" %}
+
+                        Manage tickets and monitor your IT Help Desk.
+
+                    {% elif role == "support" %}
+
+                        View and manage tickets assigned to you.
+
+                    {% else %}
+
+                        Create and track your IT support tickets.
+
+                    {% endif %}
+
                 </p>
 
-            </div>
 
-        </div>
+                <!-- Create Ticket -->
+
+                <a
+                    href="/create-ticket"
+                    class="create-ticket-btn"
+                >
+                    ＋ Create Ticket
+                </a>
+
+            </section>
 
 
-        <!-- Chart -->
 
-        <div class="status-chart">
+            <!-- =========================
+                 Statistics
+            ========================== -->
+
+            <section class="stats">
 
 
-            <!-- =====================
-                 Open Tickets
-            ====================== -->
+                <!-- Total Tickets -->
 
-            <div class="chart-bar">
+                <div class="card">
 
-                <div class="chart-label">
+                    <h3>
+                        📊 Total Tickets
+                    </h3>
 
-                    <span>
-                        🟢 Open
-                    </span>
+                    <p class="stat-number">
+                        {{ total_tickets }}
+                    </p>
 
-                    <strong>
+                </div>
+
+
+                <!-- Open Tickets -->
+
+                <div class="card">
+
+                    <h3>
+                        🔵 Open Tickets
+                    </h3>
+
+                    <p class="stat-number">
                         {{ open_tickets }}
-                    </strong>
+                    </p>
 
                 </div>
 
 
-                <div class="bar-background">
+                <!-- Closed Tickets -->
 
-                    <div
-                        class="bar-fill open-bar"
-                        style="width: {{ (open_tickets / total_tickets * 100) if total_tickets else 0 }}%;"
-                    ></div>
+                <div class="card">
 
-                </div>
+                    <h3>
+                        ✅ Closed Tickets
+                    </h3>
 
-            </div>
-
-
-            <!-- =====================
-                 In Progress Tickets
-            ====================== -->
-
-            <div class="chart-bar">
-
-                <div class="chart-label">
-
-                    <span>
-                        🟡 In Progress
-                    </span>
-
-                    <strong>
-                        {{ in_progress_tickets }}
-                    </strong>
-
-                </div>
-
-
-                <div class="bar-background">
-
-                    <div
-                        class="bar-fill progress-bar"
-                        style="width: {{ (in_progress_tickets / total_tickets * 100) if total_tickets else 0 }}%;"
-                    ></div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =====================
-                 Closed Tickets
-            ====================== -->
-
-            <div class="chart-bar">
-
-                <div class="chart-label">
-
-                    <span>
-                        🔴 Closed
-                    </span>
-
-                    <strong>
+                    <p class="stat-number">
                         {{ closed_tickets }}
-                    </strong>
+                    </p>
 
                 </div>
 
 
-                <div class="bar-background">
+                <!-- High Priority -->
 
-                    <div
-                        class="bar-fill closed-bar"
-                        style="width: {{ (closed_tickets / total_tickets * 100) if total_tickets else 0 }}%;"
-                    ></div>
+                <div class="card">
+
+                    <h3>
+                        🔥 High Priority
+                    </h3>
+
+                    <p class="stat-number">
+                        {{ high_priority_tickets }}
+                    </p>
 
                 </div>
 
-            </div>
+            </section>
 
 
-        </div>
+
+            <!-- =========================
+                 Recent Tickets
+            ========================== -->
+
+            <section class="tickets-section">
+
+
+                <!-- Section Header -->
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Recent Tickets
+                        </h2>
+
+                        <span>
+                            {{ total_tickets }} tickets
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         Search & Filters
+                    ========================== -->
+
+                    <form
+                        method="GET"
+                        action="/"
+                        class="search-form"
+                    >
+
+
+                        <!-- Search -->
+
+                        <input
+                            type="text"
+                            name="search"
+                            placeholder="🔎 Search tickets..."
+                            value="{{ search }}"
+                        >
+
+
+                        <!-- Status -->
+
+                        <select name="status">
+
+                            <option value="">
+                                All Status
+                            </option>
+
+
+                            <option
+                                value="open"
+                                {% if status == "open" %}selected{% endif %}
+                            >
+                                Open
+                            </option>
+
+
+                            <option
+                                value="in progress"
+                                {% if status == "in progress" %}selected{% endif %}
+                            >
+                                In Progress
+                            </option>
+
+
+                            <option
+                                value="closed"
+                                {% if status == "closed" %}selected{% endif %}
+                            >
+                                Closed
+                            </option>
+
+                        </select>
+
+
+
+                        <!-- Priority -->
+
+                        <select name="priority">
+
+                            <option value="">
+                                All Priority
+                            </option>
+
+
+                            <option
+                                value="high"
+                                {% if priority == "high" %}selected{% endif %}
+                            >
+                                High
+                            </option>
+
+
+                            <option
+                                value="medium"
+                                {% if priority == "medium" %}selected{% endif %}
+                            >
+                                Medium
+                            </option>
+
+
+                            <option
+                                value="low"
+                                {% if priority == "low" %}selected{% endif %}
+                            >
+                                Low
+                            </option>
+
+                        </select>
+
+
+
+                        <!-- Category -->
+
+                        <select name="category">
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+
+                            <option
+                                value="hardware"
+                                {% if category == "hardware" %}selected{% endif %}
+                            >
+                                Hardware
+                            </option>
+
+
+                            <option
+                                value="software"
+                                {% if category == "software" %}selected{% endif %}
+                            >
+                                Software
+                            </option>
+
+
+                            <option
+                                value="network"
+                                {% if category == "network" %}selected{% endif %}
+                            >
+                                Network
+                            </option>
+
+
+                            <option
+                                value="account"
+                                {% if category == "account" %}selected{% endif %}
+                            >
+                                Account
+                            </option>
+
+
+                            <option
+                                value="other"
+                                {% if category == "other" %}selected{% endif %}
+                            >
+                                Other
+                            </option>
+
+                        </select>
+
+
+
+                        <!-- Search -->
+
+                        <button type="submit">
+                            Search
+                        </button>
+
+
+                        <!-- Clear -->
+
+                        <a
+                            href="/"
+                            class="clear-filter-btn"
+                        >
+                            Clear
+                        </a>
+
+                    </form>
+
+                </div>
+
+
+
+                <!-- =========================
+                     Ticket List
+                ========================== -->
+
+                <div class="ticket-list">
+
+                    {% for ticket in tickets %}
+
+
+                        <a
+                            href="/ticket/{{ ticket.id }}"
+                            class="ticket-link"
+                        >
+
+                            <div class="ticket">
+
+
+                                <!-- Ticket Information -->
+
+                                <div class="ticket-info">
+
+                                    <!-- Ticket ID -->
+
+                                    <strong class="ticket-id">
+                                        #{{ ticket.id }}
+                                    </strong>
+
+
+                                    <div>
+
+                                        <!-- Title -->
+
+                                        <div class="ticket-title">
+                                            {{ ticket.title }}
+                                        </div>
+
+
+                                        <!-- Category -->
+
+                                        <div class="ticket-category">
+                                            {{ ticket.category }}
+                                        </div>
+
+
+                                        <!-- Created By -->
+
+                                        <div class="ticket-created">
+
+                                            Created by
+
+                                            {{ ticket.get("created_by", "Unknown") }}
+
+                                        </div>
+
+
+                                        <!-- Assigned To -->
+
+                                        <div class="ticket-created">
+
+                                            Assigned to
+
+                                            {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- Priority -->
+
+                                <span
+                                    class="priority {{ ticket.priority|lower }}"
+                                >
+                                    {{ ticket.priority }}
+                                </span>
+
+
+
+                                <!-- Status -->
+
+                                <span
+                                    class="status {{ ticket.status|lower }}"
+                                >
+                                    {{ ticket.status }}
+                                </span>
+
+                            </div>
+
+                        </a>
+
+
+                    {% else %}
+
+
+                        <!-- =========================
+                             Empty State
+                        ========================== -->
+
+                        <div class="empty-state">
+
+                            <h3>
+                                🎫 No Tickets Found
+                            </h3>
+
+                            <p>
+                                There are no tickets matching
+                                your current filters.
+                            </p>
+
+                        </div>
+
+
+                    {% endfor %}
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =========================
+                 Ticket Status Overview
+            ========================== -->
+
+            <section class="chart-section">
+
+
+                <!-- Chart Header -->
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Ticket Status Overview
+                        </h2>
+
+                        <p class="subtitle">
+                            Current status of your tickets
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Status Chart -->
+
+                <div class="status-chart">
+
+
+                    <!-- =====================
+                         Open Tickets
+                    ====================== -->
+
+                    <div class="chart-bar">
+
+                        <div class="chart-label">
+
+                            <span>
+                                🟢 Open
+                            </span>
+
+                            <strong>
+                                {{ open_tickets }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="bar-background">
+
+                            <div
+                                class="bar-fill open-bar"
+                                style="width: {{ open_percentage }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =====================
+                         In Progress Tickets
+                    ====================== -->
+
+                    <div class="chart-bar">
+
+                        <div class="chart-label">
+
+                            <span>
+                                🟡 In Progress
+                            </span>
+
+                            <strong>
+                                {{ in_progress_tickets }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="bar-background">
+
+                            <div
+                                class="bar-fill progress-bar"
+                                style="width: {{ in_progress_percentage }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =====================
+                         Closed Tickets
+                    ====================== -->
+
+                    <div class="chart-bar">
+
+                        <div class="chart-label">
+
+                            <span>
+                                🔴 Closed
+                            </span>
+
+                            <strong>
+                                {{ closed_tickets }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="bar-background">
+
+                            <div
+                                class="bar-fill closed-bar"
+                                style="width: {{ closed_percentage }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+        </main>
+
 
     </div>
 
 
-</main>
-```
+</div>
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector(".sidebar");
+    sidebar.classList.toggle("sidebar-open");
+}
+</script>
+
 
 </body>
 

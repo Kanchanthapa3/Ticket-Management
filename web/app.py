@@ -209,7 +209,38 @@ def home():
         role=session.get("role")
     )
 
+@app.route("/tickets")
+def tickets_page():
 
+    if "username" not in session:
+        return redirect("/login")
+
+    all_tickets = load_tickets()
+
+    username = session.get("username")
+    role = session.get("role")
+
+    if role == "admin":
+        tickets = all_tickets
+
+    elif role == "support":
+        tickets = [
+            ticket for ticket in all_tickets
+            if ticket.get("assigned_to") == username
+        ]
+
+    else:
+        tickets = [
+            ticket for ticket in all_tickets
+            if ticket.get("created_by") == username
+        ]
+
+    return render_template(
+        "tickets.html",
+        tickets=tickets,
+        username=username,
+        role=role
+    )
 # ============================================================
 # CREATE TICKET
 # ============================================================
@@ -243,6 +274,12 @@ def create_ticket():
            "other"
         ]
 
+        allowed_priorities = [
+            "Low",
+            "Medium",
+            "High"
+        ]
+
         # Validate category
         if category not in allowed_categories:
             flash("Invalid ticket category.", "error")
@@ -262,6 +299,15 @@ def create_ticket():
         if not description:
             flash("Ticket description is required.", "error")
             return redirect("/create-ticket")
+        if len(title)>100:
+            flash("Ticket title must be 100 characters or less.", "error")
+            return redirect("/create-ticket")
+
+        if len(description)>500:
+            flash("Ticket description must be 500 characters or less.", "error")
+            return redirect("/create-ticket")
+
+
         if not category:
             flash("Please select a ticket category.", "error")
             return redirect("/create-ticket")
@@ -336,32 +382,40 @@ def create_ticket():
 @app.route("/ticket/<int:ticket_id>")
 def ticket_details(ticket_id):
 
-    # User must be logged in
     if "username" not in session:
         return redirect("/login")
 
-
-    # Load tickets
     tickets = load_tickets()
 
-
-    # Find ticket
     for ticket in tickets:
 
         if ticket["id"] == ticket_id:
 
+            role = session.get("role")
+            username = session.get("username")
+
+            # Admin can view every ticket
+            if role == "admin":
+                pass
+
+            # Support can only view tickets assigned to them
+            elif role == "support":
+
+                if ticket.get("assigned_to") != username:
+                    return "Access denied", 403
+
+            # Users can only view tickets they created
+            elif role == "user":
+
+                if ticket.get("created_by") != username:
+                    return "Access denied", 403
+
             return render_template(
                 "ticket_details.html",
-                ticket=ticket,
-                role=session.get("role"),
-                username=session.get("username")
+                ticket=ticket
             )
 
-
-    # IMPORTANT:
-    # This must be OUTSIDE the for loop.
     return "Ticket not found", 404
-
 
 # ============================================================
 # ASSIGN TICKET
@@ -370,37 +424,29 @@ def ticket_details(ticket_id):
 @app.route("/ticket/<int:ticket_id>/assign", methods=["POST"])
 def assign_ticket(ticket_id):
 
-    # --------------------------------------------------------
-    # LOGIN CHECK
-    # --------------------------------------------------------
-
     if "username" not in session:
         return redirect("/login")
 
-
-    # --------------------------------------------------------
-    # ADMIN CHECK
-    # --------------------------------------------------------
-
     if session.get("role") != "admin":
-
         return "Access denied", 403
 
+    assigned_to = request.form.get("assigned_to")
 
-    # --------------------------------------------------------
-    # GET SELECTED SUPPORT USER
-    # --------------------------------------------------------
+    # Find valid support users
+    support_users = [
+        user["username"]
+        for user in users
+        if user["role"] == "support"
+    ]
 
-    assigned_to = request.form["assigned_to"]
+    # Allow admin to unassign a ticket
+    if assigned_to == "":
+        assigned_to = None
 
+    elif assigned_to not in support_users:
+        return "Invalid support user", 400
 
-    # Load tickets
     tickets = load_tickets()
-
-
-    # --------------------------------------------------------
-    # FIND TICKET
-    # --------------------------------------------------------
 
     for ticket in tickets:
 
@@ -408,52 +454,67 @@ def assign_ticket(ticket_id):
 
             ticket["assigned_to"] = assigned_to
 
-            # Save changes
             save_tickets(tickets)
 
-            # Return to ticket page
             return redirect(f"/ticket/{ticket_id}")
 
-
-    # Ticket doesn't exist
     return "Ticket not found", 404
 
 @app.route("/ticket/<int:ticket_id>/update", methods=["POST"])
 def update_ticket(ticket_id):
 
-    # User must be logged in
     if "username" not in session:
         return redirect("/login")
 
-    # Only admin and support can update tickets
-    if session.get("role") not in ["admin", "support"]:
-        return "Access denied", 403
-
-    # Get values from the form
-    status = request.form["status"]
-    priority = request.form["priority"]
-
-    # Load tickets
     tickets = load_tickets()
 
-    # Find the ticket
     for ticket in tickets:
 
         if ticket["id"] == ticket_id:
 
-            # Update ticket information
+            # Admin can update any ticket
+            if session.get("role") == "admin":
+                pass
+
+            # Support can only update tickets assigned to them
+            elif session.get("role") == "support":
+
+                if ticket.get("assigned_to") != session["username"]:
+                    return "Access denied", 403
+
+            # Normal users cannot update tickets
+            else:
+                return "Access denied", 403
+
+            status = request.form.get("status")
+            priority = request.form.get("priority")
+
+            allowed_statuses = [
+                "Open",
+                "In Progress",
+                "Closed"
+            ]
+
+            allowed_priorities = [
+                "Low",
+                "Medium",
+                "High"
+            ]
+
+            if status not in allowed_statuses:
+                return "Invalid status", 400
+
+            if priority not in allowed_priorities:
+                return "Invalid priority", 400
+
             ticket["status"] = status
             ticket["priority"] = priority
 
-            # Save changes
             save_tickets(tickets)
 
-            # Return to ticket details
             return redirect(f"/ticket/{ticket_id}")
 
-    # Ticket doesn't exist
     return "Ticket not found", 404
-
 
 # ============================================================
 # LOGIN

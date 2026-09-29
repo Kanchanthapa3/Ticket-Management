@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tickets - IT Help Desk</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            🛠️
+            <span>IT Help Desk</span>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}">
+                🏠
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/tickets" class="sidebar-link {% if request.path == '/tickets' %}active{% endif %}">
+                🎫
+                <span>Tickets</span>
+            </a>
+
+            {% if role == "admin" or role == "user" %}
+            <a href="/create-ticket" class="sidebar-link {% if request.path == '/create-ticket' %}active{% endif %}">
+                ➕
+                <span>New Ticket</span>
+            </a>
+            {% endif %}
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+
+                👤
+
+                <div>
+                    <strong>{{ username }}</strong>
+                    <small>{{ role|capitalize }}</small>
+                </div>
+
+            </div>
+
+            <a href="/logout" class="sidebar-link logout-link">
+                🚪
+                <span>Logout</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <nav class="page-context">
+
+            <div class="page-context">
+                {% if request.path == "/" %}
+                  Dashboard
+                {% elif request.path == "/tickets" %}
+                  New Ticket
+                {% else %}
+                  IT Help Desk
+                {% endif %}
+            </div>
+
+        </nav>
+
+
+        <main class="container">
+
+            <div class="section-header">
+
+                <div>
+                    <h1>Tickets</h1>
+                    <p class="subtitle">
+                        View and manage your tickets.
+                    </p>
+                </div>
+
+                {% if role == "admin" or role == "user" %}
+                <a href="/create-ticket" class="create-ticket-btn">
+                    + New Ticket
+                </a>
+                {% endif %}
+
+            </div>
+
+
+            {% if tickets %}
+
+                <div class="ticket-list">
+
+                    {% for ticket in tickets %}
+
+                    <a
+                        href="{{ url_for('ticket_details', ticket_id=ticket.id) }}"
+                        class="ticket-link"
+                    >
+
+                        <div class="ticket">
+
+                            <div class="ticket-info">
+
+                                <span class="ticket-id">
+                                    #{{ ticket.id }}
+                                </span>
+
+                                <h3 class="ticket-title">
+                                    {{ ticket.title }}
+                                </h3>
+
+                                <p>
+                                    {{ ticket.description }}
+                                </p>
+
+                                <small>
+                                    Category: {{ ticket.category }}
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="priority {{ ticket.priority|lower }}">
+                                    {{ ticket.priority }}
+                                </span>
+
+                                <span class="status {{ ticket.status|lower|replace(' ', '-') }}">
+                                    {{ ticket.status }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h2>No tickets found</h2>
+
+                    <p>
+                        There are currently no tickets available for your account.
+                    </p>
+
+                    {% if role == "admin" or role == "user" %}
+                    <a href="/create-ticket" class="create-ticket-btn">
+                        Create Your First Ticket
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>
