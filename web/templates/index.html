@@ -4,49 +4,36 @@
 
 <head>
 
-```
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>IT Help Desk System</title>
+    <title>IT Help Desk System</title>
 
-<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='style.css') }}"
->
-```
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 
 </head>
 
-<body>
 
-```
-<!-- =========================
-     Application Layout
-========================== -->
+<body>
 
 <div class="app-layout">
 
-
-    <!-- =========================
-         Sidebar
-    ========================== -->
+    <!-- Sidebar -->
 
     <aside class="sidebar">
-
-        <!-- Logo -->
 
         <div class="sidebar-logo">
             🛠
             <span>IT Help Desk</span>
         </div>
 
-
-        <!-- Navigation -->
 
         <nav class="sidebar-nav">
 
@@ -66,26 +53,24 @@
                 🎫
                 <span>Tickets</span>
             </a>
-            {% if role == "admin" or role == "user" %}
 
+
+            {% if role == "admin" or role == "user" %}
 
             <a
                 href="/create-ticket"
-                class="sidebar-link {% if request.path == '/tickets' %}active{% endif %}"
+                class="sidebar-link {% if request.path == '/create-ticket' %}active{% endif %}"
             >
                 ➕
                 <span>New Ticket</span>
             </a>
+
             {% endif %}
 
         </nav>
 
 
-        <!-- Sidebar Bottom -->
-
         <div class="sidebar-bottom">
-
-            <!-- User Information -->
 
             <div class="sidebar-user">
 
@@ -106,8 +91,6 @@
             </div>
 
 
-            <!-- Logout -->
-
             <a
                 href="/logout"
                 class="sidebar-link logout-link"
@@ -121,34 +104,45 @@
     </aside>
 
 
-
-    <!-- =========================
-         Main Content
-    ========================== -->
+    <!-- Main content -->
 
     <div class="main-content">
 
-        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+
+        <!-- Mobile menu -->
+
+        <button
+            class="mobile-menu-btn"
+            onclick="toggleSidebar()"
+        >
             ☰
         </button>
 
 
-        <!-- =========================
-             Navigation Bar
-        ========================== -->
+        <!-- Navigation bar -->
 
         <nav class="navbar">
 
             <div class="page-context">
+
                 {% if request.path == "/" %}
-                  Dashboard
+
+                    Dashboard
+
                 {% elif request.path == "/tickets" %}
-                  Tickets
+
+                    Tickets
+
                 {% elif request.path == "/create-ticket" %}
-                  New Ticket
+
+                    New Ticket
+
                 {% else %}
-                  IT Help Desk
+
+                    IT Help Desk
+
                 {% endif %}
+
             </div>
 
 
@@ -157,7 +151,6 @@
                 <div class="user">
                     👤 {{ username }}
                 </div>
-
 
                 <a
                     href="/logout"
@@ -171,15 +164,12 @@
         </nav>
 
 
-
-        <!-- =========================
-             Dashboard
-        ========================== -->
+        <!-- Dashboard -->
 
         <main class="container">
 
 
-            <!-- Dashboard Heading -->
+            <!-- Dashboard heading -->
 
             <section class="dashboard-header">
 
@@ -221,7 +211,7 @@
                 </p>
 
 
-                <!-- Create Ticket -->
+                {% if role == "admin" or role == "user" %}
 
                 <a
                     href="/create-ticket"
@@ -230,20 +220,22 @@
                     ＋ Create Ticket
                 </a>
 
+                {% endif %}
+
             </section>
 
 
-
-            <!-- =========================
-                 Statistics
-            ========================== -->
+            <!-- Statistics -->
 
             <section class="stats">
 
 
                 <!-- Total Tickets -->
 
-                <div class="card">
+                <a
+                    href="/tickets"
+                    class="card"
+                >
 
                     <h3>
                         📊 Total Tickets
@@ -253,12 +245,19 @@
                         {{ total_tickets }}
                     </p>
 
-                </div>
+                    <span class="card-link-text">
+                        View all tickets →
+                    </span>
+
+                </a>
 
 
                 <!-- Open Tickets -->
 
-                <div class="card">
+                <a
+                    href="/tickets?status=Open"
+                    class="card"
+                >
 
                     <h3>
                         🔵 Open Tickets
@@ -268,12 +267,19 @@
                         {{ open_tickets }}
                     </p>
 
-                </div>
+                    <span class="card-link-text">
+                        View open tickets →
+                    </span>
+
+                </a>
 
 
                 <!-- Closed Tickets -->
 
-                <div class="card">
+                <a
+                    href="/tickets?status=Closed"
+                    class="card"
+                >
 
                     <h3>
                         ✅ Closed Tickets
@@ -283,12 +289,19 @@
                         {{ closed_tickets }}
                     </p>
 
-                </div>
+                    <span class="card-link-text">
+                        View closed tickets →
+                    </span>
+
+                </a>
 
 
                 <!-- High Priority -->
 
-                <div class="card">
+                <a
+                    href="/tickets?priority=High"
+                    class="card"
+                >
 
                     <h3>
                         🔥 High Priority
@@ -298,20 +311,20 @@
                         {{ high_priority_tickets }}
                     </p>
 
-                </div>
+                    <span class="card-link-text">
+                        View high priority →
+                    </span>
+
+                </a>
+
 
             </section>
 
 
-
-            <!-- =========================
-                 Recent Tickets
-            ========================== -->
+            <!-- Recent tickets -->
 
             <section class="tickets-section">
 
-
-                <!-- Section Header -->
 
                 <div class="section-header">
 
@@ -322,311 +335,123 @@
                         </h2>
 
                         <span>
-                            {{ total_tickets }} tickets
+                            Showing latest 5 of {{ total_tickets }} tickets
                         </span>
 
                     </div>
 
 
-
-                    <!-- =========================
-                         Search & Filters
-                    ========================== -->
-
-                    <form
-                        method="GET"
-                        action="/"
-                        class="search-form"
+                    <a
+                        href="/tickets"
+                        class="view-all-btn"
                     >
-
-
-                        <!-- Search -->
-
-                        <input
-                            type="text"
-                            name="search"
-                            placeholder="🔎 Search tickets..."
-                            value="{{ search }}"
-                        >
-
-
-                        <!-- Status -->
-
-                        <select name="status">
-
-                            <option value="">
-                                All Status
-                            </option>
-
-
-                            <option
-                                value="open"
-                                {% if status == "open" %}selected{% endif %}
-                            >
-                                Open
-                            </option>
-
-
-                            <option
-                                value="in progress"
-                                {% if status == "in progress" %}selected{% endif %}
-                            >
-                                In Progress
-                            </option>
-
-
-                            <option
-                                value="closed"
-                                {% if status == "closed" %}selected{% endif %}
-                            >
-                                Closed
-                            </option>
-
-                        </select>
-
-
-
-                        <!-- Priority -->
-
-                        <select name="priority">
-
-                            <option value="">
-                                All Priority
-                            </option>
-
-
-                            <option
-                                value="high"
-                                {% if priority == "high" %}selected{% endif %}
-                            >
-                                High
-                            </option>
-
-
-                            <option
-                                value="medium"
-                                {% if priority == "medium" %}selected{% endif %}
-                            >
-                                Medium
-                            </option>
-
-
-                            <option
-                                value="low"
-                                {% if priority == "low" %}selected{% endif %}
-                            >
-                                Low
-                            </option>
-
-                        </select>
-
-
-
-                        <!-- Category -->
-
-                        <select name="category">
-
-                            <option value="">
-                                All Categories
-                            </option>
-
-
-                            <option
-                                value="hardware"
-                                {% if category == "hardware" %}selected{% endif %}
-                            >
-                                Hardware
-                            </option>
-
-
-                            <option
-                                value="software"
-                                {% if category == "software" %}selected{% endif %}
-                            >
-                                Software
-                            </option>
-
-
-                            <option
-                                value="network"
-                                {% if category == "network" %}selected{% endif %}
-                            >
-                                Network
-                            </option>
-
-
-                            <option
-                                value="account"
-                                {% if category == "account" %}selected{% endif %}
-                            >
-                                Account
-                            </option>
-
-
-                            <option
-                                value="other"
-                                {% if category == "other" %}selected{% endif %}
-                            >
-                                Other
-                            </option>
-
-                        </select>
-
-
-
-                        <!-- Search -->
-
-                        <button type="submit">
-                            Search
-                        </button>
-
-
-                        <!-- Clear -->
-
-                        <a
-                            href="/"
-                            class="clear-filter-btn"
-                        >
-                            Clear
-                        </a>
-
-                    </form>
+                        View All Tickets →
+                    </a>
 
                 </div>
 
 
-
-                <!-- =========================
-                     Ticket List
-                ========================== -->
+                <!-- Recent ticket list -->
 
                 <div class="ticket-list">
 
-                    {% for ticket in tickets %}
+                    {% for ticket in tickets[:5] %}
+
+                    <a
+                        href="/ticket/{{ ticket.id }}"
+                        class="ticket-link"
+                    >
+
+                        <div class="ticket">
 
 
-                        <a
-                            href="/ticket/{{ ticket.id }}"
-                            class="ticket-link"
-                        >
-
-                            <div class="ticket">
+                            <div class="ticket-info">
 
 
-                                <!-- Ticket Information -->
-
-                                <div class="ticket-info">
-
-                                    <!-- Ticket ID -->
-
-                                    <strong class="ticket-id">
-                                        #{{ ticket.id }}
-                                    </strong>
+                                <strong class="ticket-id">
+                                    #{{ ticket.id }}
+                                </strong>
 
 
-                                    <div>
+                                <div>
 
-                                        <!-- Title -->
-
-                                        <div class="ticket-title">
-                                            {{ ticket.title }}
-                                        </div>
+                                    <div class="ticket-title">
+                                        {{ ticket.title }}
+                                    </div>
 
 
-                                        <!-- Category -->
-
-                                        <div class="ticket-category">
-                                            {{ ticket.category }}
-                                        </div>
+                                    <div class="ticket-category">
+                                        {{ ticket.category }}
+                                    </div>
 
 
-                                        <!-- Created By -->
+                                    <div class="ticket-created">
 
-                                        <div class="ticket-created">
+                                        Created by
+                                        {{ ticket.get("created_by", "Unknown") }}
 
-                                            Created by
-
-                                            {{ ticket.get("created_by", "Unknown") }}
-
-                                        </div>
+                                    </div>
 
 
-                                        <!-- Assigned To -->
+                                    <div class="ticket-created">
 
-                                        <div class="ticket-created">
-
-                                            Assigned to
-
-                                            {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
-
-                                        </div>
+                                        Assigned to
+                                        {{ ticket.get("assigned_to", "Not Assigned") or "Not Assigned" }}
 
                                     </div>
 
                                 </div>
 
-
-
-                                <!-- Priority -->
-
-                                <span
-                                    class="priority {{ ticket.priority|lower }}"
-                                >
-                                    {{ ticket.priority }}
-                                </span>
-
-
-
-                                <!-- Status -->
-
-                                <span
-                                    class="status {{ ticket.status|lower }}"
-                                >
-                                    {{ ticket.status }}
-                                </span>
-
                             </div>
 
-                        </a>
+
+                            <span
+                                class="priority {{ ticket.priority|lower }}"
+                            >
+                                {{ ticket.priority }}
+                            </span>
+
+
+                            <span
+                                class="status {{ ticket.status|lower|replace(' ', '-') }}"
+                            >
+                                {{ ticket.status }}
+                            </span>
+
+
+                        </div>
+
+                    </a>
 
 
                     {% else %}
 
 
-                        <!-- =========================
-                             Empty State
-                        ========================== -->
+                    <div class="empty-state">
 
-                        <div class="empty-state">
+                        <h3>
+                            🎫 No Tickets Found
+                        </h3>
 
-                            <h3>
-                                🎫 No Tickets Found
-                            </h3>
+                        <p>
+                            There are currently no tickets.
+                        </p>
 
-                            <p>
-                                There are no tickets matching
-                                your current filters.
-                            </p>
-
-                        </div>
+                    </div>
 
 
                     {% endfor %}
 
                 </div>
 
+
             </section>
 
 
-
-            <!-- =========================
-                 Ticket Status Overview
-            ========================== -->
+            <!-- Ticket status chart -->
 
             <section class="chart-section">
 
-
-                <!-- Chart Header -->
 
                 <div class="section-header">
 
@@ -645,15 +470,10 @@
                 </div>
 
 
-
-                <!-- Status Chart -->
-
                 <div class="status-chart">
 
 
-                    <!-- =====================
-                         Open Tickets
-                    ====================== -->
+                    <!-- Open -->
 
                     <div class="chart-bar">
 
@@ -682,10 +502,7 @@
                     </div>
 
 
-
-                    <!-- =====================
-                         In Progress Tickets
-                    ====================== -->
+                    <!-- In Progress -->
 
                     <div class="chart-bar">
 
@@ -714,10 +531,7 @@
                     </div>
 
 
-
-                    <!-- =====================
-                         Closed Tickets
-                    ====================== -->
+                    <!-- Closed -->
 
                     <div class="chart-bar">
 
@@ -751,21 +565,209 @@
             </section>
 
 
-        </main>
+            <!-- Issue category chart -->
 
+            <section class="chart-section">
+
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Issue Categories
+                        </h2>
+
+                        <p class="subtitle">
+                            Hover over a category to see its details
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="category-chart">
+
+
+                    <div
+                        class="pie-chart"
+                        id="categoryPie"
+                        style="
+                            --software: {{ software_percentage }}%;
+                            --hardware: {{ hardware_percentage }}%;
+                            --network: {{ network_percentage }}%;
+                            --account: {{ account_percentage }}%;
+                            --other: {{ other_percentage }}%;
+                        "
+
+                        data-software="{{ software_tickets }}"
+                        data-hardware="{{ hardware_tickets }}"
+                        data-network="{{ network_tickets }}"
+                        data-account="{{ account_tickets }}"
+                        data-other="{{ other_tickets }}"
+                    >
+
+                        <div
+                            class="pie-tooltip"
+                            id="pieTooltip"
+                        ></div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+        </main>
 
     </div>
 
-
 </div>
+
+
+<
 <script>
-function toggleSidebar() {
-    const sidebar = document.querySelector(".sidebar");
-    sidebar.classList.toggle("sidebar-open");
-}
+    // Mobile sidebar toggle
+    function toggleSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+
+        if (sidebar) {
+            sidebar.classList.toggle("sidebar-open");
+        }
+    }
+
+    // Pie chart hover tooltip
+    document.addEventListener("DOMContentLoaded", function () {
+        const pie = document.getElementById("categoryPie");
+        const tooltip = document.getElementById("pieTooltip");
+
+        if (!pie || !tooltip) {
+            return;
+        }
+
+        const categories = [
+            {
+                name: "Software",
+                percentage: parseFloat(
+                    pie.style.getPropertyValue("--software")
+                ) || 0,
+                count: Number(pie.dataset.software) || 0
+            },
+            {
+                name: "Hardware",
+                percentage: parseFloat(
+                    pie.style.getPropertyValue("--hardware")
+                ) || 0,
+                count: Number(pie.dataset.hardware) || 0
+            },
+            {
+                name: "Network",
+                percentage: parseFloat(
+                    pie.style.getPropertyValue("--network")
+                ) || 0,
+                count: Number(pie.dataset.network) || 0
+            },
+            {
+                name: "Account",
+                percentage: parseFloat(
+                    pie.style.getPropertyValue("--account")
+                ) || 0,
+                count: Number(pie.dataset.account) || 0
+            },
+            {
+                name: "Other",
+                percentage: parseFloat(
+                    pie.style.getPropertyValue("--other")
+                ) || 0,
+                count: Number(pie.dataset.other) || 0
+            }
+        ];
+
+        // Hide tooltip when there are no tickets
+        const totalTickets = categories.reduce(
+            (total, category) => total + category.count,
+            0
+        );
+
+        if (totalTickets === 0) {
+            tooltip.classList.remove("show");
+            return;
+        }
+
+        pie.addEventListener("mousemove", function (event) {
+            const rect = pie.getBoundingClientRect();
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const mouseX = event.clientX - rect.left - centerX;
+            const mouseY = event.clientY - rect.top - centerY;
+
+            // Ignore movement outside the circular chart
+            const radius = Math.min(rect.width, rect.height) / 2;
+
+            if (Math.hypot(mouseX, mouseY) > radius) {
+                tooltip.classList.remove("show");
+                return;
+            }
+
+            // Calculate angle clockwise from the top
+            let angle = Math.atan2(mouseY, mouseX) *
+                (180 / Math.PI);
+
+            angle = (angle + 90 + 360) % 360;
+
+            let currentAngle = 0;
+            let selectedCategory = null;
+
+            for (const category of categories) {
+                const sliceAngle = category.percentage * 3.6;
+
+                if (
+                    angle >= currentAngle &&
+                    angle < currentAngle + sliceAngle
+                ) {
+                    selectedCategory = category;
+                    break;
+                }
+
+                currentAngle += sliceAngle;
+            }
+
+            if (!selectedCategory) {
+                tooltip.classList.remove("show");
+                return;
+            }
+
+            // Use textContent to safely display tooltip content
+            tooltip.replaceChildren();
+
+            const title = document.createElement("strong");
+            title.textContent = selectedCategory.name;
+
+            const details = document.createElement("span");
+            details.textContent =
+                `${selectedCategory.count} tickets · ` +
+                `${selectedCategory.percentage.toFixed(1)}%`;
+
+            tooltip.append(title, details);
+
+            tooltip.style.left =
+                `${event.clientX - rect.left}px`;
+
+            tooltip.style.top =
+                `${event.clientY - rect.top}px`;
+
+            tooltip.classList.add("show");
+        });
+
+        pie.addEventListener("mouseleave", function () {
+            tooltip.classList.remove("show");
+        });
+    });
 </script>
-
-
 </body>
-
 </html>

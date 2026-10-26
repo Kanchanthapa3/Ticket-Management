@@ -1,47 +1,81 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login - IT Help Desk</title>
+    <title>Login | IT Help Desk</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
-
 </head>
 
+<body class="login-page">
 
-<body>
+    <div class="login-container">
 
-    <nav class="navbar">
+        <!-- LEFT SIDE -->
+        <div class="login-info">
 
-        <div class="logo">
-            🛠 IT HELP DESK
-        </div>
-
-        <div class="user">
-            🔐 Login
-        </div>
-
-    </nav>
-
-
-    <main class="login-container">
-
-        <div class="login-card">
-
-            <div class="login-icon">
-                🛠️
+            <div class="login-logo">
+                💻
             </div>
 
-            <h1>Welcome Back</h1>
+            <h1>IT Help Desk</h1>
 
-            <p class="subtitle">
-                Sign in to your IT Help Desk account
+            <p>
+                Manage support requests, track issues,
+                and keep your workplace running smoothly.
             </p>
 
+            <div class="login-features">
 
-            <form method="POST" action="/login">
+                <div class="login-feature">
+                    <span>🎫</span>
+                    <div>
+                        <strong>Track Tickets</strong>
+                        <small>Manage support requests easily.</small>
+                    </div>
+                </div>
+
+                <div class="login-feature">
+                    <span>📊</span>
+                    <div>
+                        <strong>Monitor Issues</strong>
+                        <small>Keep an eye on ticket activity.</small>
+                    </div>
+                </div>
+
+                <div class="login-feature">
+                    <span>⚡</span>
+                    <div>
+                        <strong>Resolve Faster</strong>
+                        <small>Keep IT support organized.</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="login-card">
+
+            <div class="login-header">
+
+                <h2>Welcome back 👋</h2>
+
+                <p>
+                    Sign in to access your help desk.
+                </p>
+
+            </div>
+
+
+            <form method="POST" class="login-form">
 
                 <div class="form-group">
 
@@ -49,13 +83,20 @@
                         Username
                     </label>
 
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        placeholder="Enter your username"
-                        required
-                    >
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">👤</span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username"
+                            required
+                            autocomplete="username"
+                        >
+
+                    </div>
 
                 </div>
 
@@ -66,27 +107,80 @@
                         Password
                     </label>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        required
-                    >
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                            aria-label="Show password"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <button type="submit" class="login-btn">
-                    🔐 Sign In
+                <button type="submit" class="login-button">
+                    Sign In
+                    <span>→</span>
                 </button>
 
             </form>
 
+
+            <div class="login-footer">
+
+                <span>🔐</span>
+                Secure IT Support Portal
+
+            </div>
+
         </div>
 
-    </main>
+    </div>
+
+
+    <script>
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const button =
+                document.querySelector(".password-toggle");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                button.textContent = "🙈";
+
+            } else {
+
+                password.type = "password";
+                button.textContent = "👁️";
+
+            }
+
+        }
+
+    </script>
 
 </body>
 
 </html>
+

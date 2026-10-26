@@ -5,104 +5,370 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tickets - IT Help Desk</title>
+    <title>Tickets | IT Help Desk</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
 
 <body>
 
-<div class="app-layout">
+    <!-- Navigation -->
+    <nav class="navbar">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <div class="sidebar-logo">
-            🛠️
-            <span>IT Help Desk</span>
+        <div class="logo">
+            🛠 IT HELP DESK
         </div>
 
-        <nav class="sidebar-nav">
+        <div class="navbar-right">
 
-            <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}">
-                🏠
-                <span>Dashboard</span>
+            <div class="user">
+                👤 {{ username }}
+            </div>
+
+            <button
+                id="theme-toggle"
+                class="theme-toggle"
+                type="button"
+                aria-label="Toggle dark mode"
+                title="Toggle theme"
+            >
+                🌙
+            </button>
+
+            <a href="/logout" class="logout-btn">
+                Logout
             </a>
 
-            <a href="/tickets" class="sidebar-link {% if request.path == '/tickets' %}active{% endif %}">
-                🎫
-                <span>Tickets</span>
-            </a>
+        </div>
 
-            {% if role == "admin" or role == "user" %}
-            <a href="/create-ticket" class="sidebar-link {% if request.path == '/create-ticket' %}active{% endif %}">
-                ➕
-                <span>New Ticket</span>
-            </a>
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Back -->
+        <a href="/" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+
+        <!-- Page Header -->
+        <section class="page-header">
+
+            <div>
+                <h1>🎫 Tickets</h1>
+
+                <p class="subtitle">
+                    {% if role == "admin" %}
+                        View and manage all tickets.
+                    {% elif role == "support" %}
+                        View tickets assigned to you.
+                    {% else %}
+                        View tickets you have created.
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if role != "support" %}
+                <a
+                    href="/create-ticket"
+                    class="create-ticket-btn"
+                >
+                    ＋ Create Ticket
+                </a>
             {% endif %}
 
-        </nav>
+        </section>
 
-        <div class="sidebar-bottom">
 
-            <div class="sidebar-user">
+        <!-- Filters -->
+        <section class="filters-card">
 
-                👤
+            <div class="filters-header">
 
                 <div>
-                    <strong>{{ username }}</strong>
-                    <small>{{ role|capitalize }}</small>
+                    <h2>Search & Filters</h2>
+
+                    <p>
+                        Narrow down tickets using multiple filters.
+                    </p>
                 </div>
+
+                <span class="result-count">
+                    {{ tickets|length }} result{% if tickets|length != 1 %}s{% endif %}
+                </span>
 
             </div>
 
-            <a href="/logout" class="sidebar-link logout-link">
-                🚪
-                <span>Logout</span>
-            </a>
+
+            <form
+                method="GET"
+                action="/tickets"
+                class="tickets-filter-form"
+            >
+
+                <!-- Search -->
+                <div class="filter-group search-group">
+
+                    <label for="search">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        id="search"
+                        name="search"
+                        placeholder="Search by ID, title, description..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="filter-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select
+                        id="status"
+                        name="status"
+                    >
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option
+                            value="Open"
+                            {% if status == "Open" %}selected{% endif %}
+                        >
+                            Open
+                        </option>
+
+                        <option
+                            value="In Progress"
+                            {% if status == "In Progress" %}selected{% endif %}
+                        >
+                            In Progress
+                        </option>
+
+                        <option
+                            value="Closed"
+                            {% if status == "Closed" %}selected{% endif %}
+                        >
+                            Closed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Priority -->
+                <div class="filter-group">
+
+                    <label for="priority">
+                        Priority
+                    </label>
+
+                    <select
+                        id="priority"
+                        name="priority"
+                    >
+
+                        <option value="">
+                            All Priorities
+                        </option>
+
+                        <option
+                            value="High"
+                            {% if priority == "High" %}selected{% endif %}
+                        >
+                            🔴 High
+                        </option>
+
+                        <option
+                            value="Medium"
+                            {% if priority == "Medium" %}selected{% endif %}
+                        >
+                            🟠 Medium
+                        </option>
+
+                        <option
+                            value="Low"
+                            {% if priority == "Low" %}selected{% endif %}
+                        >
+                            🟢 Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Category -->
+                <div class="filter-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        name="category"
+                    >
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        <option
+                            value="hardware"
+                            {% if category == "hardware" %}selected{% endif %}
+                        >
+                            🖥 Hardware
+                        </option>
+
+                        <option
+                            value="software"
+                            {% if category == "software" %}selected{% endif %}
+                        >
+                            💻 Software
+                        </option>
+
+                        <option
+                            value="network"
+                            {% if category == "network" %}selected{% endif %}
+                        >
+                            🌐 Network
+                        </option>
+
+                        <option
+                            value="account"
+                            {% if category == "account" %}selected{% endif %}
+                        >
+                            👤 Account
+                        </option>
+
+                        <option
+                            value="other"
+                            {% if category == "other" %}selected{% endif %}
+                        >
+                            📌 Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Date -->
+                <div class="filter-group">
+
+                    <label for="date">
+                        Created Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        value="{{ selected_date }}"
+                    >
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="filter-actions">
+
+                    <button
+                        type="submit"
+                        class="filter-btn"
+                    >
+                        🔎 Apply Filters
+                    </button>
+
+                    <a
+                        href="/tickets"
+                        class="clear-filter-btn"
+                    >
+                        ↻ Clear
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- Active Filters -->
+        {% if search or status or priority or category or selected_date %}
+
+        <div class="active-filters">
+
+            <span class="active-filter-label">
+                Active filters:
+            </span>
+
+            {% if search %}
+                <span class="filter-chip">
+                    🔎 {{ search }}
+                </span>
+            {% endif %}
+
+            {% if status %}
+                <span class="filter-chip">
+                    📌 {{ status }}
+                </span>
+            {% endif %}
+
+            {% if priority %}
+                <span class="filter-chip">
+                    ⚡ {{ priority }}
+                </span>
+            {% endif %}
+
+            {% if category %}
+                <span class="filter-chip">
+                    📂 {{ category|capitalize }}
+                </span>
+            {% endif %}
+
+            {% if selected_date %}
+                <span class="filter-chip">
+                    📅 {{ selected_date }}
+                </span>
+            {% endif %}
 
         </div>
 
-    </aside>
+        {% endif %}
 
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        <button class="mobile-menu-btn" onclick="toggleSidebar()">
-            ☰
-        </button>
-
-        <nav class="page-context">
-
-            <div class="page-context">
-                {% if request.path == "/" %}
-                  Dashboard
-                {% elif request.path == "/tickets" %}
-                  New Ticket
-                {% else %}
-                  IT Help Desk
-                {% endif %}
-            </div>
-
-        </nav>
-
-
-        <main class="container">
+        <!-- Tickets -->
+        <section class="tickets-section">
 
             <div class="section-header">
 
                 <div>
-                    <h1>Tickets</h1>
-                    <p class="subtitle">
-                        View and manage your tickets.
-                    </p>
-                </div>
+                    <h2>
+                        Ticket List
+                    </h2>
 
-                {% if role == "admin" or role == "user" %}
-                <a href="/create-ticket" class="create-ticket-btn">
-                    + New Ticket
-                </a>
-                {% endif %}
+                    <span>
+                        {{ tickets|length }}
+                        ticket{% if tickets|length != 1 %}s{% endif %}
+                    </span>
+                </div>
 
             </div>
 
@@ -113,49 +379,72 @@
 
                     {% for ticket in tickets %}
 
-                    <a
-                        href="{{ url_for('ticket_details', ticket_id=ticket.id) }}"
-                        class="ticket-link"
-                    >
+                        <a
+                            href="/ticket/{{ ticket.id }}"
+                            class="ticket-link"
+                        >
 
-                        <div class="ticket">
+                            <article class="ticket">
 
-                            <div class="ticket-info">
-
-                                <span class="ticket-id">
+                                <!-- Ticket ID -->
+                                <div class="ticket-id">
                                     #{{ ticket.id }}
-                                </span>
-
-                                <h3 class="ticket-title">
-                                    {{ ticket.title }}
-                                </h3>
-
-                                <p>
-                                    {{ ticket.description }}
-                                </p>
-
-                                <small>
-                                    Category: {{ ticket.category }}
-                                </small>
-
-                            </div>
+                                </div>
 
 
-                            <div>
+                                <!-- Main Info -->
+                                <div class="ticket-info">
 
-                                <span class="priority {{ ticket.priority|lower }}">
-                                    {{ ticket.priority }}
-                                </span>
+                                    <h3 class="ticket-title">
+                                        {{ ticket.title }}
+                                    </h3>
 
-                                <span class="status {{ ticket.status|lower|replace(' ', '-') }}">
-                                    {{ ticket.status }}
-                                </span>
+                                    <p class="ticket-description">
+                                        {{ ticket.description }}
+                                    </p>
 
-                            </div>
+                                    <div class="ticket-meta">
 
-                        </div>
+                                        <span>
+                                            📂
+                                            {{ ticket.category|capitalize }}
+                                        </span>
 
-                    </a>
+                                        <span>
+                                            👤
+                                            {{ ticket.get("created_by", "Unknown") }}
+                                        </span>
+
+                                        <span>
+                                            📅
+                                            {{ ticket.get("created_at", "Unknown") }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Status / Priority -->
+                                <div class="ticket-side">
+
+                                    <span
+                                        class="priority {{ ticket.priority|lower }}"
+                                    >
+                                        {{ ticket.priority }}
+                                    </span>
+
+                                    <span
+                                        class="status {{ ticket.status|lower|replace(' ', '-') }}"
+                                    >
+                                        {{ ticket.status }}
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                        </a>
 
                     {% endfor %}
 
@@ -163,29 +452,98 @@
 
             {% else %}
 
+                <!-- Empty State -->
                 <div class="empty-state">
 
-                    <h2>No tickets found</h2>
+                    <div class="empty-icon">
+                        🎫
+                    </div>
+
+                    <h2>
+                        No tickets found
+                    </h2>
 
                     <p>
-                        There are currently no tickets available for your account.
+                        Try changing your search or filters.
                     </p>
 
-                    {% if role == "admin" or role == "user" %}
-                    <a href="/create-ticket" class="create-ticket-btn">
-                        Create Your First Ticket
-                    </a>
+                    {% if search or status or priority or category or selected_date %}
+
+                        <a
+                            href="/tickets"
+                            class="clear-filter-btn"
+                        >
+                            Clear all filters
+                        </a>
+
+                    {% elif role != "support" %}
+
+                        <a
+                            href="/create-ticket"
+                            class="create-ticket-btn"
+                        >
+                            ＋ Create Your First Ticket
+                        </a>
+
                     {% endif %}
 
                 </div>
 
             {% endif %}
 
-        </main>
+        </section>
 
-    </div>
+    </main>
 
-</div>
+
+    <!-- Mobile Sidebar Toggle -->
+    <script>
+
+        const themeToggle =
+            document.getElementById("theme-toggle");
+
+        const savedTheme =
+            localStorage.getItem("theme");
+
+        if (savedTheme === "dark") {
+
+            document.documentElement
+                .setAttribute("data-theme", "dark");
+
+            themeToggle.textContent = "☀️";
+        }
+
+
+        themeToggle.addEventListener("click", function () {
+
+            const currentTheme =
+                document.documentElement
+                    .getAttribute("data-theme");
+
+            if (currentTheme === "dark") {
+
+                document.documentElement
+                    .removeAttribute("data-theme");
+
+                localStorage.setItem("theme", "light");
+
+                themeToggle.textContent = "🌙";
+
+            } else {
+
+                document.documentElement
+                    .setAttribute("data-theme", "dark");
+
+                localStorage.setItem("theme", "dark");
+
+                themeToggle.textContent = "☀️";
+
+            }
+
+        });
+
+    </script>
 
 </body>
+
 </html>
