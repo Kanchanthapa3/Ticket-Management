@@ -160,7 +160,8 @@ def get_ticket_by_id(ticket_id):
             "created_at": row[6],
             "created_by": row[7],
             "assigned_to": row[8],
-            "remarks": []
+            "remarks": [],
+            "history": []
         }
 
         cursor.execute(
@@ -184,6 +185,32 @@ def get_ticket_by_id(ticket_id):
                     "text": remark[0],
                     "created_by": remark[1],
                     "created_at": remark[2]
+                }
+            )
+
+        cursor.execute(
+            """
+            SELECT
+                h.action,
+                h.details,
+                u.username,
+                h.created_at
+            FROM ticket_history h
+            JOIN users u
+                ON h.user_id = u.id
+            WHERE h.ticket_id = %s
+            ORDER BY h.created_at ASC
+            """,
+            (ticket_id,)
+        )
+
+        for history in cursor.fetchall():
+            ticket["history"].append(
+                {
+                    "action": history[0],
+                    "details": history[1],
+                    "created_by": history[2],
+                    "created_at": history[3]
                 }
             )
 

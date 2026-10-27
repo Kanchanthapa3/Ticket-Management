@@ -499,6 +499,64 @@
                 </div>
 
                 {% endif %}
+                {% if ticket.get("history") %}
+                <div class="history-section">
+                    <div class="section-header">
+                        <div>
+                            <h2>Activity History</h2>
+                            <p class="subtitle"> A record of changes and actions on this ticket.
+
+                            </p>
+                        </div>
+                    </div>
+                    <div class="history-list">
+                        {% for item in ticket.get("history", []) %}
+
+                        <div class="history-item">
+                           <div class="history-icon">
+                            {% if item.action == "Ticket Created" %}
+                              🎫
+                            {% elif item.action == "Ticket Assigned" %}
+                              👤
+                            {% elif item.action == "Ticket Unassigned" %}
+                               ↩️
+                            {% elif item.action == "Status Changed" %}
+                              🔄
+                            {% elif item.action == "Priority Changed" %}
+                              ⚡
+                            {% elif item.action == "Remark Added" %}
+                              💬
+                            {% else %}
+                               📝
+                            {% endif %}
+                           </div> 
+                           <div class="history-content">
+                            <div class="history-header">
+                                <strong>
+                                    {{ item.action }}
+                                </strong>
+                                <span>
+                                    {{ item.created_at }}
+                                </span>
+                            </div>
+                            <p>
+                                {{ item.details }}
+                            </p>
+                            <small>
+                                👤 {{ item.created_by }}
+                            </small>
+
+
+                           </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+                {% endif %}
+                
+
+
 
             </div>
 
