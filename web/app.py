@@ -509,9 +509,7 @@ def create_ticket():
         allowed_categories = [
             "hardware",
             "software",
-            "network",
-            "account",
-            "other"
+            "network"
         ]
 
         allowed_priorities = [

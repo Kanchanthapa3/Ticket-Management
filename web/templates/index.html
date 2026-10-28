@@ -597,21 +597,20 @@
                             --software: {{ software_percentage }}%;
                             --hardware: {{ hardware_percentage }}%;
                             --network: {{ network_percentage }}%;
-                            --account: {{ account_percentage }}%;
-                            --other: {{ other_percentage }}%;
+                        
                         "
-
                         data-software="{{ software_tickets }}"
                         data-hardware="{{ hardware_tickets }}"
                         data-network="{{ network_tickets }}"
-                        data-account="{{ account_tickets }}"
-                        data-other="{{ other_tickets }}"
+
+                    
+                        
                     >
 
-                        <div
-                            class="pie-tooltip"
-                            id="pieTooltip"
-                        ></div>
+                        <div class="pie-tooltip" id="pieTooltip">
+                            
+                        </div>
+                        
 
                     </div>
 
@@ -627,8 +626,6 @@
 
 </div>
 
-
-<
 <script>
     // Mobile sidebar toggle
     function toggleSidebar() {
@@ -652,48 +649,32 @@
             {
                 name: "Software",
                 percentage: parseFloat(
-                    pie.style.getPropertyValue("--software")
+                    getComputedStyle(pie).getPropertyValue("--software")
                 ) || 0,
                 count: Number(pie.dataset.software) || 0
             },
             {
                 name: "Hardware",
                 percentage: parseFloat(
-                    pie.style.getPropertyValue("--hardware")
+                    getComputedStyle(pie).getPropertyValue("--hardware")
                 ) || 0,
                 count: Number(pie.dataset.hardware) || 0
             },
             {
                 name: "Network",
                 percentage: parseFloat(
-                    pie.style.getPropertyValue("--network")
+                    getComputedStyle(pie).getPropertyValue("--network")
                 ) || 0,
                 count: Number(pie.dataset.network) || 0
-            },
-            {
-                name: "Account",
-                percentage: parseFloat(
-                    pie.style.getPropertyValue("--account")
-                ) || 0,
-                count: Number(pie.dataset.account) || 0
-            },
-            {
-                name: "Other",
-                percentage: parseFloat(
-                    pie.style.getPropertyValue("--other")
-                ) || 0,
-                count: Number(pie.dataset.other) || 0
             }
         ];
 
-        // Hide tooltip when there are no tickets
         const totalTickets = categories.reduce(
             (total, category) => total + category.count,
             0
         );
 
         if (totalTickets === 0) {
-            tooltip.classList.remove("show");
             return;
         }
 
@@ -703,19 +684,22 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            const mouseX = event.clientX - rect.left - centerX;
-            const mouseY = event.clientY - rect.top - centerY;
+            const mouseX =
+                event.clientX - rect.left - centerX;
 
-            // Ignore movement outside the circular chart
-            const radius = Math.min(rect.width, rect.height) / 2;
+            const mouseY =
+                event.clientY - rect.top - centerY;
+
+            const radius =
+                Math.min(rect.width, rect.height) / 2;
 
             if (Math.hypot(mouseX, mouseY) > radius) {
                 tooltip.classList.remove("show");
                 return;
             }
 
-            // Calculate angle clockwise from the top
-            let angle = Math.atan2(mouseY, mouseX) *
+            let angle =
+                Math.atan2(mouseY, mouseX) *
                 (180 / Math.PI);
 
             angle = (angle + 90 + 360) % 360;
@@ -724,7 +708,8 @@
             let selectedCategory = null;
 
             for (const category of categories) {
-                const sliceAngle = category.percentage * 3.6;
+                const sliceAngle =
+                    category.percentage * 3.6;
 
                 if (
                     angle >= currentAngle &&
@@ -742,7 +727,6 @@
                 return;
             }
 
-            // Use textContent to safely display tooltip content
             tooltip.replaceChildren();
 
             const title = document.createElement("strong");

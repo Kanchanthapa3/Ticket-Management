@@ -93,13 +93,13 @@
                 <div>
                     <h2>Search & Filters</h2>
 
-                    <p>
+                    <p class="subtitle">
                         Narrow down tickets using multiple filters.
                     </p>
                 </div>
 
                 <span class="result-count">
-                    {{ tickets|length }} result{% if tickets|length != 1 %}s{% endif %}
+                    {{ tickets|length }} result
                 </span>
 
             </div>
@@ -108,11 +108,11 @@
             <form
                 method="GET"
                 action="/tickets"
-                class="tickets-filter-form"
+                class="tickets-filters"
             >
 
                 <!-- Search -->
-                <div class="filter-group search-group">
+                <div class="filter-search">
 
                     <label for="search">
                         Search
@@ -123,7 +123,7 @@
                         id="search"
                         name="search"
                         placeholder="Search by ID, title, description..."
-                        value="{{ search }}"
+                        value="{{ request.args.get('search', '') }}"
                     >
 
                 </div>
